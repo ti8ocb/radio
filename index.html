@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title>Radio / pz</title>
+<meta name="description" content="Yo escucho mis emisoras y musica aquí" />
+<meta name="author" content="compuparrita">
+<meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<link rel="shortcut icon" type="image/ico" href="favicon.ico">
+<link rel="stylesheet" href="includes/maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Ubuntu:400,500,700,700italic,300,300italic,400italic">
+<link rel="stylesheet" type="text/css" href="includes/css/main2589.css">
+<link rel="stylesheet" href="includes/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+<meta property="fb:app_id" content="263921489014995" />
+<meta property="og:title" content="Radio ti8 - Yo escucho mis emisoras y musica aquí" />
+<meta property="og:type" content="website" />
+<meta property="og:author" content="Radio ti8" />
+<meta property="og:url" content="includes/img/cp-760x520.png" />
+<meta property="og:site_name" content="Radio ti8" />
+<meta property="og:image" content="includes/img/cp-760x520.png" />
+<meta property="og:image:width" content="300" />
+<meta property="og:image:height" content="300" />
+<meta name="msvalidate.01" content="" />
+<meta name="title" content="Radio ti8 - Yo escucho mis emisoras y musica aquí" />
+<meta property="og:url" content="includes/img/cp-760x520.png" />
+<meta property="og:locale" content="es_ES" />
+<meta name="language" content="Spanish" />
+<meta property="collection:language" content="es" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@ti8ocb" />
+<meta name="twitter:creator" content="@ti8ocb" />
+<meta property="twitter:image" content="includes/img/cp-760x520.png" />
+<style>
+.caption {
+    padding-bottom: 10px !important;
+}
+#select {
+    border: 1px solid #fff;
+    background-color: transparent;
+    border-radius: 5px;
+    font-size: 14px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 25px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: relative;
+}
+.player__center {
+    position: relative;
+}
+.player__center:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    right: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-top: 6px solid #fff;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    pointer-events: none;
+}
+#select option {
+    color: #000;
+}
+#select option {
+    color: #000;
+}
+.main-player.is-buffering:after {
+    content: "\f110";
+    animation: fa-spin 1s infinite steps(8);
+    font: normal normal normal 30px/1 FontAwesome;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: #fff;
+    -ms-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    opacity: .9;
+    text-shadow: 0 0 3px rgba(0, 0, 0, .5);
+}
+.feedback {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 7px 10px;
+    font-size: 12px;
+    transition: all .3s ease-out;
+}
+.slider-container {
+    left: auto;
+    transform: translateX(0);
+    right: 2px;
+}
+.player__left, .player__right {
+    width: 55px;
+}
+.player__right {
+    text-align: right;
+}
+.feedback:hover {
+    background-color: #fd7100;
+}
+</style>
+<script src="includes/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<style>
+#espacio-banner-superior {
+    display: none;
+    z-index: 999999;
+    flex-direction: column;
+    position: relative;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #F5F5F5;
+}
+.dark-mode #espacio-banner-superior {
+    background-color: #14202a;
+}
+#boton-banner-superior, #mensaje-scroll {
+    border-radius: 8px;
+    background-color: #D8D8D8;
+    align-items: center;
+    justify-content: center;
+    color: #222222;
+    font-family: Lato;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 18px;
+}
+#boton-banner-superior {
+    height: 38px;
+    width: 120px;
+}
+#mensaje-scroll {
+    height: 38px;
+    width: 320px;
+}
+#mensaje-scroll svg {
+    width: 18px;
+}
+#boton-banner-superior, #mensaje-scroll, #ITT_Mobile_BBCL {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+<!-- Reproductor html5 -->
+<div id="jquery_jplayer_1_disable" class="jp-jplayer"></div>
+<audio id="laradio" style="width:1px; height:1px;display:none;"></audio>
+<!-- .container -->
+<div class="container"> 
+  <!-- .main-header --> 
+  <!-- /.main-header --> 
+  <!-- .main --> 
+  <a style="float: left" href="https://api.whatsapp.com/send?phone=+50661947620">Whatsapp</a> <br>
+  <main class="main">
+    <style>
+        .radio-rally {
+          height: 50px;
+          background-color: #222222;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          position: relative;
+          margin-bottom: 10px;
+        }
+
+        .control-radio-rally {
+          height: 60px;
+          width: 60px;
+          background-position: center;
+          background-size: contain;
+          background-repeat: no-repeat;
+        }
+
+
+
+        .logo-rally {
+          height: 30px;
+        }
+
+        .texto-rally {
+          font-size: 10px;
+          line-height: 15px;
+          color: #FFFFFF;
+        }
+      </style>
+    <div id="jquery_jplayer_2" class="jp-jplayer"></div>
+    <div id="jp_container_2" role="application" class="jp-audio radio-rally" style="display: none;">
+      <div class="texto-rally"> SIGUE EN VIVO<br>
+        <strong>WRC Rally Concepción</strong> </div>
+      <div id="boton-play-rally" class="jp-play control-radio-rally play-radio-rally"></div>
+    </div>
+    <!-- .main-player -->
+    <div class="main-player" style="background-image: url('includes/img/bg.jpg');">
+      <div class="main-player__status" id="status">DETENIDO</div>
+      <span class="the-count" style="display: true;"> <span class="the-count__header"> Escuchando </span> <span
+            class="the-count__body"> <span class="the-count__icon"> <i class="fa fa-user" aria-hidden="true"></i> </span> <span id="contador" class="the-count__text">4</span> </span> </span> 
+      <!-- <a href="#" class="js-feedback feedback">Envianos tu comentario</a> --> 
+      <!-- .caption -->
+      <div class="caption">
+        <div style="text-align: center"><img style="float: none;" src="includes/img/logo.png" alt="ti8 - Radio"></div>
+        <h2 class="caption__title">Presiona Play</h2>
+        <div class="player">
+          <div class="player__left"> <a href="javascript:void(0);" class="play-stop js-play-stop is-actived"><i
+                  class="fa fa-play" aria-hidden="true"></i></a> <a href="javascript:void(0);" class="pause js-pause"><i
+                  class="fa fa-pause" aria-hidden="true"></i></a> </div>
+          <div class="player__center">
+            <form>
+              <select name="selection" id="select">
+                <option value="https://centova.hostingtico.com:7016/;stream.mp3">Unción 106.7 FM</option>
+                <option value="https://centova01.logicahost.com.br:20038/autodj">Oldies Hits Español</option>
+                <option value="https://centova01.logicahost.com.br:20037/autodj">Oldies Hits
+                70´s y 80´s</option>
+                <option value="https://player.hostingtico.com/proxy/8094">Amor FM 93.9</option>
+                <option value="https://18863.live.streamtheworld.com/QTEJA_CR_SC">La Caliente 90.7FM</option>
+                <option value="http://rtvhd.net:9942/;">IQ, La Radio Inteligente 93.9 fm</option>
+                <option value="http://cast4.my-control-panel.com/proxy/ondabra3/stream">☆ Onda Brava Radio ☆</option>
+                <option value="https://17853.live.streamtheworld.com/CRC_999AAC.aac">Azul 99.9
+                "Lo mejor de tu vida"</option>
+                <option value="http://rtvhd.net:9932/;">☺ Radio Omega ☺</option>
+                <option value="https://radio.grscr.com/listen/la_tropical/radio.mp3">La Tropical Online</option>
+                <option value="https://stream.zeno.fm/wq6egm5ywrquv">♪ Orotina Online Radio</option>
+                <option value="https://turadio.accesopanel.com/8340/stream" autoplay="true">Radio Nosara</option>
+                <option value="https://s2.radio.co/s83b86382e/listen">Columbia 98.7 FM / CR</option>
+                <option value="http://stream.zeno.fm/q4g3r414ztzuv">Conexión Urbana / CR</option>
+                <option value="https://stream10.usastreams.com/8008/guanacastefm">♪ Guanacaste FM
+                80s 90s y mas ♪</option>
+                <option value="https://live.turadio.stream:7005/stream?type=http&nocache=596">15 - Radio Musical
+                97.5FM</option>
+                <option value="https://live.turadio.stream:7006/;">Radio Sinfonola 90.3 FM</option>
+                <option value="https://s5.radio.co/sd515b7b34/listen">♪ Radio 2, 99.5 fm</option>
+                <option value="http://198.27.68.65:8785/stream/1/">Radio Sinaí, / Pz.</option>
+                <option value="https://playerservices.streamtheworld.com/api/livestream-redirect/BESAME_CR.mp3">Bésame
+                89.9 FM</option>
+                <option value="http://d.liveatc.net/mroc">M.R.O.C, Aerop Int SJO</option>
+                <optgroup disabled label="NICARAGUA"></optgroup>
+                <option value="https://stream.zeno.fm/gwkd66k0a7duv">Radio Corporación / Ni</option>
+                <option value="http://streaming.lasandino.com.ni:8020/lasandino.mp3">Radio La Sandino / Ni</option>
+                <option value="https://stream.zenolive.com/6nwu9a6uwz4tv.aac">La Nueva Radio ya!</option>
+                <option value="https://stream.zeno.fm/q2xepbu0cqovv">Radio La Chinandegana</option>
+                <option value="https://polaris.hostingnica.net/8012/stream/1/">Siuna La Poderosa</option>
+                <option value="https://stream.zeno.fm/hj27louo82ptv">Radio Bonanza</option>
+                <optgroup disabled label="PANAMÁ"></optgroup>
+                <option value="https://www.streaming507.net:8048/stream">Omega Stereo Panamá</option>
+                <optgroup disabled label="VENEZUELA"></optgroup>
+                <option value="https://acp4.lorini.net/proxy/ur2080?mp=/stream">Actualidad 90.3 FM</option>
+                <!-- http://173.208.212.74:2080/stream -->
+                <option value="https://27373.live.streamtheworld.com/CARACOL_RADIOAAC.aac?dist=onlineradiobox">Caracol
+                Radio 100.9 FM</option>
+                <option value="https://guri.tepuyserver.net/8086/stream">Radio La Voz de Carabobo 1040 AM</option>
+                <option value="https://guri.tepuyserver.net/8457/stream;">34 - Tamá Stereo 103.9 FM / San Cristóbal </option>
+              </select>
+            </form>
+          </div>
+          <div class="player__right"> <a href="javascript:void(0);" class="js-volume"><i class="fa fa-volume-up"
+                  aria-hidden="true"></i></a>
+            <div class="slider-container">
+              <div class="js-slider slider"></div>
+            </div>
+          </div>
+        </div>
+        <div id="TituloEmisora"><em>Lista de emisora</em></div>
+      </div>
+      <!-- /.caption --> 
+      <!-- .caption -->
+      <div class="caption" id="caption-vast" style="display: none; z-index: 999; background: rgba(0,0,0,0);">
+        <div class="player">
+          <div class="player__left"> </div>
+          <div class="player__center"> </div>
+          <div class="player__right"> </div>
+        </div>
+      </div>
+      <!-- /.caption --> 
+    </div>
+    <!-- Saludo y Hora -->
+    <section id="saludoyhora"> <img alt="" name="tiempo" class="imagen">
+      <div id="txtsaludo">Saludo</div>
+      <div id="TituloEmisoras">Unción</div>
+      <p id="reloj" class="hora">Hora</p>
+      <!-- <p id="reloj" class="text-center hora">Hora</p> --> 
+    </section>
+    <script type="text/javascript">
+        // <!-- mostrar Saludo -->	
+        function mostrarSaludo() {
+
+          fecha = new Date();
+          hora = fecha.getHours();
+
+          if (hora >= 0 && hora < 12) {
+            texto = "Buenos Días";
+            imagen = "img/dia.png";
+          }
+
+          if (hora >= 12 && hora < 18) {
+            texto = "Buenas Tardes";
+            imagen = "img/tarde.png";
+          }
+
+          if (hora >= 18 && hora < 24) {
+            texto = "Buenas Noches";
+            imagen = "img/noche.png";
+          }
+          document.images["tiempo"].src = imagen;
+          document.getElementById('txtsaludo').innerHTML = texto;
+        };
+
+        mostrarSaludo();
+
+        $(document).ready(function () { // Reproductor
+          $('select').change(function () {
+            mostrarSaludo();
+          });
+        });
+
+      </script> 
+    <!-- Fin Reloj --> 
+    <!-- /.main-player --> 
+    <!-- <div id="container-vast"></div> --> 
+    <!-- .main-content -->
+    <div class="main-content">
+      <div class="main-content__item">
+        <div class="banner">
+          <div class="banner__container"> 
+            <!-- 300x250_Reproductor_online_2.0 --> 
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- .main-footer -->
+    <footer class="main-footer"> <span class="dps"> <a href="https://becoming-crappie-current.ngrok-free.app"
+            target="_blank"><img src="includes/img/dps_2.png" width="150" height="25" alt=""></a> </span> </footer>
+    <!-- .main-footer --> 
+  </main>
+  <!-- /.main --> 
+</div>
+<!-- /.container --> 
+<!-- <div class="cuadro">
+        <h2>Texto Bonito</h2>
+        <p>La mejor música en español desde 1960 hasta finales de los 90, para volver a vivir...!.</p>
+    </div> --> 
+<script src="includes/js/vendor/jquery.marquee.min.js"></script> 
+<script src="includes/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script> 
+<script src="includes/js/vendor/jquery.timer.js"></script> 
+<script>
+    var zone = "uncion";
+  </script> 
+<script src="includes/js/videojs/video.min.js"></script> 
+<script src="includes/main_ads2589.js?v=62069038"></script> 
+<script src="includes/js/reproductor-y-otras-script.js?newversion"></script> 
+<script src="includes/js/relojam_pm.js"></script>
+</body>
+</html>
