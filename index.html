@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radio Stream App — Minimalista (Para Óscar 😊)</title>
+    <title>Radio Stream App — Para Óscar 😊 (Corregido Play/Pause)</title>
     <link rel="shortcut icon" type="image/ico" href="img/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -38,10 +38,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Cambiado para permitir scroll */
+            justify-content: flex-start;
             padding: 20px;
             transition: var(--transition);
-            overflow-y: auto; /* ¡Scroll habilitado! */
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -58,7 +58,7 @@
             padding: 30px;
             box-shadow: var(--shadow);
             transition: var(--transition);
-            margin: 20px 0; /* Espacio para scroll */
+            margin: 20px 0;
         }
 
         body.dark-mode .app-container {
@@ -476,9 +476,8 @@
     </div>
 
     <script>
-        console.log("✅ Radio Stream App — Para Óscar 😊 (Smart TV Optimizada)");
+        console.log("✅ Radio Stream App — Para Óscar 😊 (Corregido Play/Pause + Scroll TV)");
 
-        // Función para generar logo placeholder con la inicial del nombre
         function getPlaceholderLogo(name) {
             const firstChar = name.charAt(0).toUpperCase();
             const colors = [
@@ -493,7 +492,6 @@
             return `https://via.placeholder.com/150/${colors[colorIndex]}/ffffff?text=${encodeURIComponent(firstChar)}`;
         }
 
-        // Array COMPLETO de emisoras (31 estaciones)
         const stations = [
             { name: "Unción 106.7 FM", url: "https://centova.hostingtico.com:7016/;stream.mp3", logo: "https://cdn-radiotime-logos.tunein.com/s25054d.png" },
             { name: "Oldies Hits Español", url: "https://centova01.logicahost.com.br:20038/autodj", logo: "https://cdn-profiles.tunein.com/s232911/images/logod.png" },
@@ -533,7 +531,6 @@
             logo: station.logo || getPlaceholderLogo(station.name)
         }));
 
-        // Elementos del DOM
         const stationSelector = document.getElementById('stationSelector');
         const playPauseBtn = document.getElementById('playPauseBtn');
         const volumeSlider = document.getElementById('volumeSlider');
@@ -550,12 +547,9 @@
         const recentList = document.getElementById('recentList');
         const favoritesList = document.getElementById('favoritesList');
 
-        // Audio
         const audioPlayer = new Audio();
         let currentStationIndex = null;
         let focusTimeout = null;
-
-        // Cargar favoritos desde localStorage
         let favorites = JSON.parse(localStorage.getItem('radioFavorites')) || [];
 
         // Predeterminar modo oscuro
@@ -563,7 +557,6 @@
         document.body.className = savedMode;
         modeLabel.textContent = savedMode === 'dark-mode' ? 'Claro' : 'Oscuro';
 
-        // Función para llenar el selector
         function populateStationSelector() {
             stations.forEach((station, index) => {
                 const option = document.createElement('option');
@@ -573,7 +566,7 @@
             });
         }
 
-        // Función para reproducir/pausar
+        // ✅ FUNCIÓN CORREGIDA: togglePlayPause
         function togglePlayPause() {
             if (stationSelector.value === "") {
                 errorMessage.textContent = "⚠️ Selecciona una emisora primero";
@@ -585,7 +578,18 @@
                 audioPlayer.src = station.url;
                 audioPlayer.volume = volumeSlider.value;
 
-                audioPlayer.play().then(() => {
+                audioPlayer.oncanplay = null;
+                audioPlayer.onplaying = null;
+                audioPlayer.onerror = null;
+
+                playPauseBtn.textContent = '⏳';
+                errorMessage.textContent = "Cargando... por favor espera";
+
+                audioPlayer.oncanplay = function() {
+                    audioPlayer.play();
+                };
+
+                audioPlayer.onplaying = function() {
                     playPauseBtn.textContent = '❚❚';
                     playingIndicator.textContent = `Escuchando: ${station.name}`;
                     stationLogo.src = station.logo;
@@ -594,18 +598,22 @@
                     addToRecent(station.name, stationSelector.value);
                     errorMessage.textContent = "";
                     showNotification(station.name);
-                }).catch(e => {
-                    errorMessage.textContent = "❌ Error al reproducir. Intenta otra emisora.";
+                    console.log("✅ Audio reproduciéndose correctamente");
+                };
+
+                audioPlayer.onerror = function(e) {
                     playPauseBtn.textContent = '▶';
-                    console.error("Error de reproducción:", e);
-                });
+                    errorMessage.textContent = "❌ Error al reproducir. Intenta otra emisora.";
+                    console.error("Error real de reproducción:", e);
+                };
+
             } else {
                 audioPlayer.pause();
                 playPauseBtn.textContent = '▶';
             }
         }
 
-        // Cambiar emisora
+        // ✅ FUNCIÓN CORREGIDA: changeStation
         function changeStation() {
             if (stationSelector.value === "") {
                 resetPlayer();
@@ -617,307 +625,13 @@
             audioPlayer.volume = volumeSlider.value;
             stationLogo.src = station.logo;
 
-            audioPlayer.play().then(() => {
-                playPauseBtn.textContent = '❚❚';
-                playingIndicator.textContent = `Escuchando: ${station.name}`;
-                currentStationIndex = stationSelector.value;
-                updateListenerCount();
-                addToRecent(station.name, stationSelector.value);
-                errorMessage.textContent = "";
-                showNotification(station.name);
-            }).catch(e => {
-                errorMessage.textContent = "❌ Error al cargar la emisora.";
-                playPauseBtn.textContent = '▶';
-                console.error("Error al cambiar de emisora:", e);
-            });
-        }
+            audioPlayer.oncanplay = null;
+            audioPlayer.onplaying = null;
+            audioPlayer.onerror = null;
 
-        // Reset player
-        function resetPlayer() {
-            audioPlayer.pause();
-            audioPlayer.src = '';
-            playPauseBtn.textContent = '▶';
-            playingIndicator.textContent = 'Selecciona una emisora para comenzar';
-            stationLogo.src = "https://via.placeholder.com/150/5e72e4/ffffff?text=+";
-            currentStationIndex = null;
-            errorMessage.textContent = "";
-        }
+            playPauseBtn.textContent = '⏳';
+            errorMessage.textContent = "Cargando... por favor espera";
 
-        // Actualizar contador de oyentes (simulado con índice)
-        function updateListenerCount() {
-            const listeners = parseInt(stationSelector.value) + 1;
-            playingIndicator.textContent = `Escuchando: ${stations[stationSelector.value].name} | Oyentes: ${listeners * 10}`;
-        }
-
-        // Cambiar modo oscuro
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            document.body.classList.toggle('light-mode');
-
-            const isDark = document.body.classList.contains('dark-mode');
-            modeLabel.textContent = isDark ? 'Claro' : 'Oscuro';
-            localStorage.setItem('radioTheme', isDark ? 'dark-mode' : 'light-mode');
-        }
-
-        // Actualizar saludo según hora
-        function updateGreeting() {
-            const now = new Date();
-            const hour = now.getHours();
-            let greeting;
-
-            if (hour >= 0 && hour < 12) {
-                greeting = "Buenos Días";
-            } else if (hour >= 12 && hour < 18) {
-                greeting = "Buenas Tardes";
-            } else {
-                greeting = "Buenas Noches";
-            }
-
-            txtsaludo.textContent = greeting;
-        }
-
-        // Actualizar reloj
-        function updateClock() {
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            const seconds = now.getSeconds();
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            const formattedHours = hours % 12 || 12;
-
-            clockElement.textContent = `${formattedHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
-        }
-
-        // Agregar a recientes
-        function addToRecent(name, index) {
-            const key = `${index}-${name}`;
-            let recents = JSON.parse(localStorage.getItem('radioRecents')) || [];
-            recents = recents.filter(item => item.key !== key);
-            recents.unshift({ key, name, index });
-            if (recents.length > 5) recents.pop();
-            localStorage.setItem('radioRecents', JSON.stringify(recents));
-            renderRecents();
-        }
-
-        // Renderizar recientes
-        function renderRecents() {
-            const recents = JSON.parse(localStorage.getItem('radioRecents')) || [];
-            recentList.innerHTML = '';
-            recents.forEach(item => {
-                const tag = document.createElement('span');
-                tag.className = 'recent-tag';
-                tag.textContent = item.name;
-                tag.addEventListener('click', () => {
-                    stationSelector.value = item.index;
-                    changeStation();
-                    stationSelector.focus();
-                    resetFocusTimeout();
-                });
-                recentList.appendChild(tag);
-            });
-        }
-
-        // Renderizar favoritos
-        function renderFavorites() {
-            favoritesList.innerHTML = '';
-
-            if (favorites.length === 0) {
-                favoritesList.innerHTML = '<div style="font-size:12px;color:var(--text-light);opacity:0.7;padding:8px;">No tienes favoritos aún</div>';
-                return;
-            }
-
-            favorites.forEach(index => {
-                const station = stations[index];
-                if (!station) return;
-
-                const tag = document.createElement('span');
-                tag.className = 'recent-tag';
-                tag.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a24)';
-                tag.style.color = 'white';
-                tag.textContent = station.name;
-                tag.addEventListener('click', () => {
-                    stationSelector.value = index;
-                    changeStation();
-                    stationSelector.focus();
-                    resetFocusTimeout();
-                });
-                favoritesList.appendChild(tag);
-            });
-        }
-
-        // Manejar favoritos
-        favoriteBtn.addEventListener('click', () => {
-            if (currentStationIndex === null) {
-                errorMessage.textContent = "⚠️ Reproduce una emisora primero";
-                return;
-            }
-
-            const stationKey = parseInt(currentStationIndex);
-            const station = stations[stationKey];
-
-            if (favorites.includes(stationKey)) {
-                favorites = favorites.filter(f => f !== stationKey);
-                favoriteBtn.textContent = "❤️ Favorito";
-                localStorage.setItem('radioFavorites', JSON.stringify(favorites));
-                errorMessage.textContent = `"${station.name}" eliminada de favoritos`;
-            } else {
-                favorites.push(stationKey);
-                favoriteBtn.textContent = "✅ En Favoritos";
-                localStorage.setItem('radioFavorites', JSON.stringify(favorites));
-                errorMessage.textContent = `"${station.name}" añadida a favoritos`;
-            }
-
-            renderFavorites();
-            setTimeout(() => { errorMessage.textContent = ""; }, 3000);
-        });
-
-        // Compartir por WhatsApp
-        shareBtn.addEventListener('click', () => {
-            if (currentStationIndex === null) {
-                errorMessage.textContent = "⚠️ Reproduce una emisora primero";
-                return;
-            }
-
-            const station = stations[currentStationIndex];
-            const text = `¡Escucha ${station.name} en Radio Stream App!`;
-            const url = encodeURIComponent(window.location.href);
-            window.open(`https://api.whatsapp.com/send?text=${text} ${url}`, '_blank');
-        });
-
-        // Notificaciones
-        notifyBtn.addEventListener('click', () => {
-            if (!("Notification" in window)) {
-                errorMessage.textContent = "🔔 Tu navegador no soporta notificaciones";
-                return;
-            }
-
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
-                    showNotification("Notificaciones activadas ✅");
-                } else {
-                    errorMessage.textContent = "🔔 Necesitas permitir notificaciones";
-                }
-            });
-        });
-
-        function showNotification(stationName) {
-            if (!("Notification" in window) || Notification.permission !== "granted") return;
-
-            new Notification("📻 Radio Stream", {
-                body: `Ahora escuchando: ${stationName}`,
-                icon: stationLogo.src,
-                silent: false
-            });
-        }
-
-        // FOCO AUTOMÁTICO PARA SMART TV — ¡ROBUSTO!
-        function resetFocusTimeout() {
-            if (focusTimeout) clearTimeout(focusTimeout);
-            focusTimeout = setTimeout(() => {
-                const activeElement = document.activeElement;
-                const isInteractive = activeElement === playPauseBtn || 
-                                      activeElement === volumeSlider || 
-                                      activeElement === favoriteBtn || 
-                                      activeElement === shareBtn || 
-                                      activeElement === notifyBtn;
-
-                if (!isInteractive) {
-                    stationSelector.focus();
-                    console.log("🎯 Foco forzado al selector para navegación con control remoto");
-                } else {
-                    console.log("⏸️ Foco no cambiado: usuario interactuando con controles");
-                    setTimeout(() => stationSelector.focus(), 2000);
-                }
-            }, 5000);
-        }
-
-        // Variables para doble pulsación
-        let lastArrowDown = 0;
-        let lastArrowUp = 0;
-
-        // Scroll con doble pulsación de flechas
-        document.addEventListener('keydown', function(e) {
-            const now = Date.now();
-
-            if (e.key === 'ArrowDown' || e.keyCode === 40) {
-                if (now - lastArrowDown < 300) {
-                    e.preventDefault();
-                    window.scrollBy({ top: 80, behavior: 'smooth' });
-                    lastArrowDown = 0;
-                } else {
-                    lastArrowDown = now;
-                }
-            } else if (e.key === 'ArrowUp' || e.keyCode === 38) {
-                if (now - lastArrowUp < 300) {
-                    e.preventDefault();
-                    window.scrollBy({ top: -80, behavior: 'smooth' });
-                    lastArrowUp = 0;
-                } else {
-                    lastArrowUp = now;
-                }
-            }
-        });
-
-        // Event Listeners
-        stationSelector.addEventListener('change', () => {
-            changeStation();
-            resetFocusTimeout();
-        });
-
-        stationSelector.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.keyCode === 13) {
-                setTimeout(() => {
-                    stationSelector.blur();
-                    setTimeout(() => stationSelector.focus(), 100);
-                }, 10);
-            }
-        });
-
-        playPauseBtn.addEventListener('click', () => {
-            togglePlayPause();
-            resetFocusTimeout();
-        });
-
-        volumeSlider.addEventListener('input', () => {
-            audioPlayer.volume = volumeSlider.value;
-            resetFocusTimeout();
-        });
-
-        darkModeToggle.addEventListener('change', toggleDarkMode);
-
-        // Inicialización
-        populateStationSelector();
-        updateGreeting();
-        updateClock();
-        renderRecents();
-        renderFavorites();
-
-        // Set intervals
-        setInterval(updateClock, 1000);
-
-        // Focus inicial + loop constante para Smart TV
-        function ensureFocusLoop() {
-            stationSelector.focus();
-            console.log("🔁 Loop de foco iniciado para Smart TV");
-            setInterval(() => {
-                if (document.activeElement !== stationSelector && 
-                    ![playPauseBtn, volumeSlider, favoriteBtn, shareBtn, notifyBtn].includes(document.activeElement)) {
-                    stationSelector.focus();
-                }
-            }, 5000);
-        }
-
-        setTimeout(ensureFocusLoop, 1000);
-
-        // Captura global de errores
-        window.addEventListener('error', function(e) {
-            console.error('❌ Error global capturado:', e.message);
-        });
-
-        // Mensaje de bienvenida personalizado para Óscar
-        setTimeout(() => {
-            console.log("🎉 ¡Hola Óscar! Tu app de radio está lista para brillar en tu Smart TV.");
-        }, 2000);
-    </script>
-</body>
-</html>
+            audioPlayer.oncanplay = function() {
+                audioPlayer.play();
+    
