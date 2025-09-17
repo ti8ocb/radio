@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radio Stream App — Minimalista (Completa + Smart TV Optimizada)</title>
+    <title>Radio Stream App — Minimalista (Para Óscar 😊)</title>
     <link rel="shortcut icon" type="image/ico" href="img/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -25,6 +25,11 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+            height: 100%;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg-light);
@@ -33,9 +38,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Cambiado para permitir scroll */
             padding: 20px;
             transition: var(--transition);
+            overflow-y: auto; /* ¡Scroll habilitado! */
+            -webkit-overflow-scrolling: touch;
         }
 
         body.dark-mode {
@@ -51,6 +58,7 @@
             padding: 30px;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            margin: 20px 0; /* Espacio para scroll */
         }
 
         body.dark-mode .app-container {
@@ -156,7 +164,6 @@
             position: relative;
         }
 
-        /* ESTILOS DEL SELECT — ¡PERFECTOS EN MODO CLARO Y OSCURO! */
         select {
             width: 100%;
             padding: 14px 16px;
@@ -392,7 +399,6 @@
             100% { box-shadow: 0 0 0 0 rgba(94, 114, 228, 0); }
         }
 
-        /* Mejora visual de las opciones del selector */
         select option {
             background: #ffffff;
             color: #212529;
@@ -470,7 +476,7 @@
     </div>
 
     <script>
-        console.log("✅ Radio Stream App — Versión 1.3 Smart TV Optimizada (JS cargado correctamente)");
+        console.log("✅ Radio Stream App — Para Óscar 😊 (Smart TV Optimizada)");
 
         // Función para generar logo placeholder con la inicial del nombre
         function getPlaceholderLogo(name) {
@@ -524,7 +530,7 @@
         ].map(station => ({
             ...station,
             url: station.url.trim(),
-            logo: station.logo || getPlaceholderLogo(station.name) // Usa logo personalizado o genera uno
+            logo: station.logo || getPlaceholderLogo(station.name)
         }));
 
         // Elementos del DOM
@@ -551,6 +557,11 @@
 
         // Cargar favoritos desde localStorage
         let favorites = JSON.parse(localStorage.getItem('radioFavorites')) || [];
+
+        // Predeterminar modo oscuro
+        const savedMode = localStorage.getItem('radioTheme') || 'dark-mode';
+        document.body.className = savedMode;
+        modeLabel.textContent = savedMode === 'dark-mode' ? 'Claro' : 'Oscuro';
 
         // Función para llenar el selector
         function populateStationSelector() {
@@ -641,11 +652,11 @@
         // Cambiar modo oscuro
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
-            if (document.body.classList.contains('dark-mode')) {
-                modeLabel.textContent = 'Claro';
-            } else {
-                modeLabel.textContent = 'Oscuro';
-            }
+            document.body.classList.toggle('light-mode');
+
+            const isDark = document.body.classList.contains('dark-mode');
+            modeLabel.textContent = isDark ? 'Claro' : 'Oscuro';
+            localStorage.setItem('radioTheme', isDark ? 'dark-mode' : 'light-mode');
         }
 
         // Actualizar saludo según hora
@@ -820,10 +831,46 @@
             }, 5000);
         }
 
+        // Variables para doble pulsación
+        let lastArrowDown = 0;
+        let lastArrowUp = 0;
+
+        // Scroll con doble pulsación de flechas
+        document.addEventListener('keydown', function(e) {
+            const now = Date.now();
+
+            if (e.key === 'ArrowDown' || e.keyCode === 40) {
+                if (now - lastArrowDown < 300) {
+                    e.preventDefault();
+                    window.scrollBy({ top: 80, behavior: 'smooth' });
+                    lastArrowDown = 0;
+                } else {
+                    lastArrowDown = now;
+                }
+            } else if (e.key === 'ArrowUp' || e.keyCode === 38) {
+                if (now - lastArrowUp < 300) {
+                    e.preventDefault();
+                    window.scrollBy({ top: -80, behavior: 'smooth' });
+                    lastArrowUp = 0;
+                } else {
+                    lastArrowUp = now;
+                }
+            }
+        });
+
         // Event Listeners
         stationSelector.addEventListener('change', () => {
             changeStation();
             resetFocusTimeout();
+        });
+
+        stationSelector.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                setTimeout(() => {
+                    stationSelector.blur();
+                    setTimeout(() => stationSelector.focus(), 100);
+                }, 10);
+            }
         });
 
         playPauseBtn.addEventListener('click', () => {
@@ -866,7 +913,11 @@
         window.addEventListener('error', function(e) {
             console.error('❌ Error global capturado:', e.message);
         });
+
+        // Mensaje de bienvenida personalizado para Óscar
+        setTimeout(() => {
+            console.log("🎉 ¡Hola Óscar! Tu app de radio está lista para brillar en tu Smart TV.");
+        }, 2000);
     </script>
 </body>
 </html>
-
