@@ -634,4 +634,292 @@
 
             audioPlayer.oncanplay = function() {
                 audioPlayer.play();
-    
+            };
+
+            audioPlayer.onplaying = function() {
+                playPauseBtn.textContent = '❚❚';
+                playingIndicator.textContent = `Escuchando: ${station.name}`;
+                currentStationIndex = stationSelector.value;
+                updateListenerCount();
+                addToRecent(station.name, stationSelector.value);
+                errorMessage.textContent = "";
+                showNotification(station.name);
+                console.log("✅ Cambio de emisora exitoso");
+            };
+
+            audioPlayer.onerror = function(e) {
+                playPauseBtn.textContent = '▶';
+                errorMessage.textContent = "❌ Error al cargar la emisora.";
+                console.error("Error al cambiar de emisora:", e);
+            };
+        }
+
+        function resetPlayer() {
+            audioPlayer.pause();
+            audioPlayer.src = '';
+            playPauseBtn.textContent = '▶';
+            playingIndicator.textContent = 'Selecciona una emisora para comenzar';
+            stationLogo.src = "https://via.placeholder.com/150/5e72e4/ffffff?text=+";
+            currentStationIndex = null;
+            errorMessage.textContent = "";
+        }
+
+        function updateListenerCount() {
+            const listeners = parseInt(stationSelector.value) + 1;
+            playingIndicator.textContent = `Escuchando: ${stations[stationSelector.value].name} | Oyentes: ${listeners * 10}`;
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+
+            const isDark = document.body.classList.contains('dark-mode');
+            modeLabel.textContent = isDark ? 'Claro' : 'Oscuro';
+            localStorage.setItem('radioTheme', isDark ? 'dark-mode' : 'light-mode');
+        }
+
+        function updateGreeting() {
+            const now = new Date();
+            const hour = now.getHours();
+            let greeting;
+
+            if (hour >= 0 && hour < 12) {
+                greeting = "Buenos Días";
+            } else if (hour >= 12 && hour < 18) {
+                greeting = "Buenas Tardes";
+            } else {
+                greeting = "Buenas Noches";
+            }
+
+            txtsaludo.textContent = greeting;
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const formattedHours = hours % 12 || 12;
+
+            clockElement.textContent = `${formattedHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
+        }
+
+        function addToRecent(name, index) {
+            const key = `${index}-${name}`;
+            let recents = JSON.parse(localStorage.getItem('radioRecents')) || [];
+            recents = recents.filter(item => item.key !== key);
+            recents.unshift({ key, name, index });
+            if (recents.length > 5) recents.pop();
+            localStorage.setItem('radioRecents', JSON.stringify(recents));
+            renderRecents();
+        }
+
+        function renderRecents() {
+            const recents = JSON.parse(localStorage.getItem('radioRecents')) || [];
+            recentList.innerHTML = '';
+            recents.forEach(item => {
+                const tag = document.createElement('span');
+                tag.className = 'recent-tag';
+                tag.textContent = item.name;
+                tag.addEventListener('click', () => {
+                    stationSelector.value = item.index;
+                    changeStation();
+                    stationSelector.focus();
+                    resetFocusTimeout();
+                });
+                recentList.appendChild(tag);
+            });
+        }
+
+        function renderFavorites() {
+            favoritesList.innerHTML = '';
+
+            if (favorites.length === 0) {
+                favoritesList.innerHTML = '<div style="font-size:12px;color:var(--text-light);opacity:0.7;padding:8px;">No tienes favoritos aún</div>';
+                return;
+            }
+
+            favorites.forEach(index => {
+                const station = stations[index];
+                if (!station) return;
+
+                const tag = document.createElement('span');
+                tag.className = 'recent-tag';
+                tag.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a24)';
+                tag.style.color = 'white';
+                tag.textContent = station.name;
+                tag.addEventListener('click', () => {
+                    stationSelector.value = index;
+                    changeStation();
+                    stationSelector.focus();
+                    resetFocusTimeout();
+                });
+                favoritesList.appendChild(tag);
+            });
+        }
+
+        favoriteBtn.addEventListener('click', () => {
+            if (currentStationIndex === null) {
+                errorMessage.textContent = "⚠️ Reproduce una emisora primero";
+                return;
+            }
+
+            const stationKey = parseInt(currentStationIndex);
+            const station = stations[stationKey];
+
+            if (favorites.includes(stationKey)) {
+                favorites = favorites.filter(f => f !== stationKey);
+                favoriteBtn.textContent = "❤️ Favorito";
+                localStorage.setItem('radioFavorites', JSON.stringify(favorites));
+                errorMessage.textContent = `"${station.name}" eliminada de favoritos`;
+            } else {
+                favorites.push(stationKey);
+                favoriteBtn.textContent = "✅ En Favoritos";
+                localStorage.setItem('radioFavorites', JSON.stringify(favorites));
+                errorMessage.textContent = `"${station.name}" añadida a favoritos`;
+            }
+
+            renderFavorites();
+            setTimeout(() => { errorMessage.textContent = ""; }, 3000);
+        });
+
+        shareBtn.addEventListener('click', () => {
+            if (currentStationIndex === null) {
+                errorMessage.textContent = "⚠️ Reproduce una emisora primero";
+                return;
+            }
+
+            const station = stations[currentStationIndex];
+            const text = `¡Escucha ${station.name} en Radio Stream App!`;
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://api.whatsapp.com/send?text=${text} ${url}`, '_blank');
+        });
+
+        notifyBtn.addEventListener('click', () => {
+            if (!("Notification" in window)) {
+                errorMessage.textContent = "🔔 Tu navegador no soporta notificaciones";
+                return;
+            }
+
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    showNotification("Notificaciones activadas ✅");
+                } else {
+                    errorMessage.textContent = "🔔 Necesitas permitir notificaciones";
+                }
+            });
+        });
+
+        function showNotification(stationName) {
+            if (!("Notification" in window) || Notification.permission !== "granted") return;
+
+            new Notification("📻 Radio Stream", {
+                body: `Ahora escuchando: ${stationName}`,
+                icon: stationLogo.src,
+                silent: false
+            });
+        }
+
+        function resetFocusTimeout() {
+            if (focusTimeout) clearTimeout(focusTimeout);
+            focusTimeout = setTimeout(() => {
+                const activeElement = document.activeElement;
+                const isInteractive = activeElement === playPauseBtn || 
+                                      activeElement === volumeSlider || 
+                                      activeElement === favoriteBtn || 
+                                      activeElement === shareBtn || 
+                                      activeElement === notifyBtn;
+
+                if (!isInteractive) {
+                    stationSelector.focus();
+                    console.log("🎯 Foco forzado al selector para navegación con control remoto");
+                } else {
+                    console.log("⏸️ Foco no cambiado: usuario interactuando con controles");
+                    setTimeout(() => stationSelector.focus(), 2000);
+                }
+            }, 5000);
+        }
+
+        let lastArrowDown = 0;
+        let lastArrowUp = 0;
+
+        document.addEventListener('keydown', function(e) {
+            const now = Date.now();
+
+            if (e.key === 'ArrowDown' || e.keyCode === 40) {
+                if (now - lastArrowDown < 300) {
+                    e.preventDefault();
+                    window.scrollBy({ top: 80, behavior: 'smooth' });
+                    lastArrowDown = 0;
+                } else {
+                    lastArrowDown = now;
+                }
+            } else if (e.key === 'ArrowUp' || e.keyCode === 38) {
+                if (now - lastArrowUp < 300) {
+                    e.preventDefault();
+                    window.scrollBy({ top: -80, behavior: 'smooth' });
+                    lastArrowUp = 0;
+                } else {
+                    lastArrowUp = now;
+                }
+            }
+        });
+
+        stationSelector.addEventListener('change', () => {
+            changeStation();
+            resetFocusTimeout();
+        });
+
+        stationSelector.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                setTimeout(() => {
+                    stationSelector.blur();
+                    setTimeout(() => stationSelector.focus(), 100);
+                }, 10);
+            }
+        });
+
+        playPauseBtn.addEventListener('click', () => {
+            togglePlayPause();
+            resetFocusTimeout();
+        });
+
+        volumeSlider.addEventListener('input', () => {
+            audioPlayer.volume = volumeSlider.value;
+            resetFocusTimeout();
+        });
+
+        darkModeToggle.addEventListener('change', toggleDarkMode);
+
+        populateStationSelector();
+        updateGreeting();
+        updateClock();
+        renderRecents();
+        renderFavorites();
+
+        setInterval(updateClock, 1000);
+
+        function ensureFocusLoop() {
+            stationSelector.focus();
+            console.log("🔁 Loop de foco iniciado para Smart TV");
+            setInterval(() => {
+                if (document.activeElement !== stationSelector && 
+                    ![playPauseBtn, volumeSlider, favoriteBtn, shareBtn, notifyBtn].includes(document.activeElement)) {
+                    stationSelector.focus();
+                }
+            }, 5000);
+        }
+
+        setTimeout(ensureFocusLoop, 1000);
+
+        window.addEventListener('error', function(e) {
+            console.error('❌ Error global capturado:', e.message);
+        });
+
+        setTimeout(() => {
+            console.log("🎉 ¡Hola Óscar! Tu app de radio está lista para brillar en tu Smart TV.");
+        }, 2000);
+    </script>
+</body>
+</html>
