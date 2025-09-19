@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radio Streaming Pro - Versión Final</title>
+    <title>Radio Streaming Pro - Versión Perfecta</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -582,10 +582,40 @@
             opacity: 1;
         }
 
+        /* Stream Error Notification */
+        .stream-error {
+            position: fixed;
+            top: 12rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: linear-gradient(135deg, var(--danger-color), var(--warning-color));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+            z-index: 1001;
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .stream-error.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
         /* Mobile notification position */
         @media (max-width: 768px) {
             .notification {
                 top: 6rem;
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .stream-error {
+                top: 10rem;
                 padding: 0.8rem 1.5rem;
                 font-size: 0.9rem;
             }
@@ -607,11 +637,11 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Browser Compatibility Info */
+        /* Browser Compatibility Info - MOVED TO RIGHT */
         .compatibility-info {
             position: fixed;
             bottom: 2rem;
-            left: 2rem;
+            right: 2rem;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             padding: 1rem;
@@ -851,13 +881,19 @@
     <audio id="audioPlayer" preload="none" crossorigin="anonymous"></audio>
     <audio id="audioPlayerFallback" preload="none" crossorigin="anonymous"></audio>
     <audio id="audioPlayerFallback2" preload="none" crossorigin="anonymous"></audio>
+    <audio id="audioPlayerFallback3" preload="none" crossorigin="anonymous"></audio>
 
     <!-- Notification -->
     <div id="notification" class="notification">
         <i class="fas fa-info-circle"></i> <span id="notificationText"></span>
     </div>
 
-    <!-- Browser Compatibility Info -->
+    <!-- Stream Error Notification -->
+    <div id="streamError" class="stream-error">
+        <i class="fas fa-exclamation-triangle"></i> <span id="streamErrorText"></span>
+    </div>
+
+    <!-- Browser Compatibility Info - MOVED TO RIGHT -->
     <div class="compatibility-info">
         <h4><i class="fas fa-browser"></i> Compatibilidad</h4>
         <div id="browserInfo">Detectando navegador...</div>
@@ -917,8 +953,11 @@
         let currentAudioPlayer = null;
         let fallbackPlayer = null;
         let fallbackPlayer2 = null;
+        let fallbackPlayer3 = null;
         let useFallback = false;
         let useFallback2 = false;
+        let useFallback3 = false;
+        let visualizerInterval = null;
 
         // Browser detection
         const browserInfo = {
@@ -930,13 +969,15 @@
             isEdge: false,
             isFirefox: false,
             isChrome: false,
-            isSafari: false
+            isSafari: false,
+            isMobile: false
         };
 
         // DOM elements
         const audioPlayer = document.getElementById('audioPlayer');
         const audioPlayerFallback = document.getElementById('audioPlayerFallback');
         const audioPlayerFallback2 = document.getElementById('audioPlayerFallback2');
+        const audioPlayerFallback3 = document.getElementById('audioPlayerFallback3');
         const stationSelect = document.getElementById('stationSelect');
         const currentLogo = document.getElementById('currentLogo');
         const currentName = document.getElementById('currentName');
@@ -955,6 +996,8 @@
         const greeting = document.getElementById('greeting');
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notificationText');
+        const streamError = document.getElementById('streamError');
+        const streamErrorText = document.getElementById('streamErrorText');
         const visualizer = document.getElementById('visualizer');
         const audioFallback = document.getElementById('audioFallback');
         const browserInfoEl = document.getElementById('browserInfo');
@@ -962,7 +1005,7 @@
 
         // Initialize app
         function initApp() {
-            console.log('🎉 ¡Hola Óscar! Tu app de radio final está lista.');
+            console.log('🎉 ¡Hola Óscar! Tu app de radio perfecta está lista.');
             
             // Detect browser capabilities
             detectBrowserCapabilities();
@@ -1003,6 +1046,9 @@
         function detectBrowserCapabilities() {
             const userAgent = navigator.userAgent;
             
+            // Detect if mobile
+            browserInfo.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+            
             // Detect browser
             if (userAgent.indexOf('Edg') > -1) {
                 browserInfo.name = 'Edge';
@@ -1038,7 +1084,7 @@
             browserInfo.supportsAudio = !!document.createElement('audio').canPlayType;
             
             // Update UI
-            browserInfoEl.textContent = `${browserInfo.name} - Soporte completo`;
+            browserInfoEl.textContent = `${browserInfo.name} ${browserInfo.isMobile ? '(Móvil)' : '(Desktop)'} - Soporte completo`;
             audioSupportEl.textContent = `Audio: ${browserInfo.supportsAudio ? '✅' : '❌'} | HLS: ${browserInfo.supportsHLS ? '✅' : '❌'} | WebAudio: ${browserInfo.supportsWebAudio ? '✅' : '❌'}`;
         }
 
@@ -1107,6 +1153,7 @@
             audioPlayer.addEventListener('canplay', () => {
                 console.log('Audio principal listo');
                 hideAudioFallback();
+                hideStreamError();
             });
 
             // Fallback audio player 1
@@ -1130,6 +1177,7 @@
             audioPlayerFallback.addEventListener('canplay', () => {
                 console.log('Audio fallback 1 listo');
                 hideAudioFallback();
+                hideStreamError();
             });
 
             // Fallback audio player 2
@@ -1147,14 +1195,39 @@
             
             audioPlayerFallback2.addEventListener('error', (e) => {
                 console.error('Error en reproductor fallback 2:', e);
-                showAudioFallback();
-                isPlaying = false;
-                updatePlayButton();
+                handleAudioError3();
             });
             
             audioPlayerFallback2.addEventListener('canplay', () => {
                 console.log('Audio fallback 2 listo');
                 hideAudioFallback();
+                hideStreamError();
+            });
+
+            // Fallback audio player 3
+            audioPlayerFallback3.addEventListener('play', () => {
+                isPlaying = true;
+                updatePlayButton();
+                startVisualizer();
+            });
+            
+            audioPlayerFallback3.addEventListener('pause', () => {
+                isPlaying = false;
+                updatePlayButton();
+                stopVisualizer();
+            });
+            
+            audioPlayerFallback3.addEventListener('error', (e) => {
+                console.error('Error en reproductor fallback 3:', e);
+                showStreamError('Esta emisora no está disponible en este momento');
+                isPlaying = false;
+                updatePlayButton();
+            });
+            
+            audioPlayerFallback3.addEventListener('canplay', () => {
+                console.log('Audio fallback 3 listo');
+                hideAudioFallback();
+                hideStreamError();
             });
         }
 
@@ -1186,15 +1259,41 @@
 
         // Start visualizer
         function startVisualizer() {
-            if (!browserInfo.supportsWebAudio || !analyser) return;
+            // Stop any existing visualizer
+            stopVisualizer();
             
-            if (!source && currentAudioPlayer) {
-                source = audioContext.createMediaElementSource(currentAudioPlayer);
-                source.connect(analyser);
-                analyser.connect(audioContext.destination);
+            if (browserInfo.supportsWebAudio && analyser && currentAudioPlayer) {
+                // Connect audio context if not already connected
+                if (!source) {
+                    try {
+                        source = audioContext.createMediaElementSource(currentAudioPlayer);
+                        source.connect(analyser);
+                        analyser.connect(audioContext.destination);
+                    } catch (e) {
+                        console.error('Error connecting Web Audio:', e);
+                        startFallbackVisualizer();
+                        return;
+                    }
+                }
+                
+                animateVisualizer();
+            } else {
+                // Fallback visualizer
+                startFallbackVisualizer();
             }
-            
-            animateVisualizer();
+        }
+
+        // Start fallback visualizer (random animation)
+        function startFallbackVisualizer() {
+            visualizerInterval = setInterval(() => {
+                if (!isPlaying) return;
+                
+                const bars = visualizer.querySelectorAll('.visualizer-bar');
+                bars.forEach((bar, index) => {
+                    const height = Math.random() * 150 + 20;
+                    bar.style.height = `${height}px`;
+                });
+            }, 100);
         }
 
         // Stop visualizer
@@ -1203,6 +1302,17 @@
                 cancelAnimationFrame(animationId);
                 animationId = null;
             }
+            
+            if (visualizerInterval) {
+                clearInterval(visualizerInterval);
+                visualizerInterval = null;
+            }
+            
+            // Reset bars to minimum height
+            const bars = visualizer.querySelectorAll('.visualizer-bar');
+            bars.forEach(bar => {
+                bar.style.height = '10px';
+            });
         }
 
         // Animate visualizer
@@ -1218,13 +1328,6 @@
                 bars.forEach((bar, index) => {
                     const value = dataArray[index * 2] || 0;
                     const height = Math.max(10, (value / 255) * 200);
-                    bar.style.height = `${height}px`;
-                });
-            } else {
-                // Fallback animation when Web Audio API is not available
-                const bars = visualizer.querySelectorAll('.visualizer-bar');
-                bars.forEach((bar, index) => {
-                    const height = Math.random() * 150 + 20;
                     bar.style.height = `${height}px`;
                 });
             }
@@ -1261,18 +1364,37 @@
                 audioPlayerFallback2.src = getOptimizedUrl(currentStation.url, 2);
                 audioPlayerFallback2.play().catch(e => {
                     console.error('Fallback 2 también falló:', e);
-                    showAudioFallback();
+                    handleAudioError3();
+                });
+            } else {
+                handleAudioError3();
+            }
+        }
+
+        // Handle audio error - try third fallback
+        function handleAudioError3() {
+            if (!useFallback3 && currentStation) {
+                useFallback3 = true;
+                currentAudioPlayer = audioPlayerFallback3;
+                
+                console.log('Intentando con fallback player 3...');
+                
+                // Try with fallback player 3
+                audioPlayerFallback3.src = getOptimizedUrl(currentStation.url, 3);
+                audioPlayerFallback3.play().catch(e => {
+                    console.error('Fallback 3 también falló:', e);
+                    showStreamError('Esta emisora no está disponible en este momento');
                     isPlaying = false;
                     updatePlayButton();
                 });
             } else {
-                showAudioFallback();
+                showStreamError('Esta emisora no está disponible en este momento');
                 isPlaying = false;
                 updatePlayButton();
             }
         }
 
-        // Get optimized URL based on browser and fallback level
+        // Get optimized URL based on browser, device and fallback level
         function getOptimizedUrl(originalUrl, fallbackLevel) {
             let url = originalUrl;
             
@@ -1280,13 +1402,30 @@
             if (browserInfo.isEdge) {
                 if (fallbackLevel === 1) {
                     // Try AAC format for Edge
-                    if (url.includes('.mp3')) {
+                    if (url.includes('.mp3') && !url.includes('streamtheworld.com')) {
+                        url = url.replace('.mp3', '.aac');
+                    }
+                    // For streamtheworld, try AAC format
+                    if (url.includes('streamtheworld.com') && url.includes('.mp3')) {
                         url = url.replace('.mp3', '.aac');
                     }
                 } else if (fallbackLevel === 2) {
-                    // Try different streaming protocol for Edge
+                    // Try removing parameters for Edge mobile
+                    if (browserInfo.isMobile) {
+                        url = url.split('?')[0];
+                    }
+                    // Try different protocol
+                    if (url.includes('http://')) {
+                        url = url.replace('http://', 'https://');
+                    }
+                } else if (fallbackLevel === 3) {
+                    // Last resort: try different streaming endpoints
                     if (url.includes('streamtheworld.com')) {
-                        url = url.replace('.mp3', '.aac');
+                        url = url.replace('streamtheworld.com', 'streamthe.world');
+                    }
+                    // For Onda Brava specific fix
+                    if (url.includes('cast4.my-control-panel.com')) {
+                        url = url.replace('cast4.my-control-panel.com', 'cast5.my-control-panel.com');
                     }
                 }
             }
@@ -1295,8 +1434,16 @@
             if (browserInfo.isFirefox) {
                 if (fallbackLevel === 1) {
                     // Try OGG format for Firefox
-                    if (url.includes('.mp3')) {
+                    if (url.includes('.mp3') && !url.includes('streamtheworld.com')) {
                         url = url.replace('.mp3', '.ogg');
+                    }
+                } else if (fallbackLevel === 2) {
+                    // Try removing parameters
+                    url = url.split('?')[0];
+                } else if (fallbackLevel === 3) {
+                    // Try different protocol
+                    if (url.includes('http://')) {
+                        url = url.replace('http://', 'https://');
                     }
                 }
             }
@@ -1304,13 +1451,52 @@
             // Chrome specific optimizations
             if (browserInfo.isChrome) {
                 if (fallbackLevel === 1) {
-                    // Try different streaming protocol for Chrome
-                    if (url.includes('streamtheworld.com')) {
+                    // Try AAC format for some streams
+                    if (url.includes('streamtheworld.com') && url.includes('.mp3')) {
                         url = url.replace('.mp3', '.aac');
+                    }
+                } else if (fallbackLevel === 2) {
+                    // Try removing parameters for mobile
+                    if (browserInfo.isMobile) {
+                        url = url.split('?')[0];
+                    }
+                } else if (fallbackLevel === 3) {
+                    // Try different protocol
+                    if (url.includes('http://')) {
+                        url = url.replace('http://', 'https://');
                     }
                 }
             }
             
+            // Safari specific optimizations
+            if (browserInfo.isSafari) {
+                if (fallbackLevel === 1) {
+                    // Safari prefers HLS
+                    if (url.includes('.mp3') && !url.includes('.m3u8')) {
+                        url = url.replace('.mp3', '.m3u8');
+                    }
+                } else if (fallbackLevel === 2) {
+                    // Try AAC format
+                    if (url.includes('.mp3')) {
+                        url = url.replace('.mp3', '.aac');
+                    }
+                } else if (fallbackLevel === 3) {
+                    // Try removing parameters
+                    url = url.split('?')[0];
+                }
+            }
+            
+            // Mobile specific optimizations
+            if (browserInfo.isMobile) {
+                if (fallbackLevel >= 2) {
+                    // Remove unnecessary parameters for mobile
+                    url = url.split('?')[0];
+                    // Remove trailing semicolons
+                    url = url.replace(/;$/, '');
+                }
+            }
+            
+            console.log(`Fallback ${fallbackLevel}: ${url}`);
             return url;
         }
 
@@ -1322,6 +1508,21 @@
         // Hide audio fallback
         function hideAudioFallback() {
             audioFallback.classList.remove('show');
+        }
+
+        // Show stream error
+        function showStreamError(message) {
+            streamErrorText.textContent = message;
+            streamError.classList.add('show');
+            
+            setTimeout(() => {
+                streamError.classList.remove('show');
+            }, 5000);
+        }
+
+        // Hide stream error
+        function hideStreamError() {
+            streamError.classList.remove('show');
         }
 
         // Change station
@@ -1337,6 +1538,13 @@
             // Reset fallback flags
             useFallback = false;
             useFallback2 = false;
+            useFallback3 = false;
+            
+            // Reset audio context
+            if (source) {
+                source.disconnect();
+                source = null;
+            }
             
             currentStation = station;
             currentLogo.src = station.logo;
@@ -1411,6 +1619,7 @@
             if (audioPlayer) audioPlayer.volume = volume;
             if (audioPlayerFallback) audioPlayerFallback.volume = volume;
             if (audioPlayerFallback2) audioPlayerFallback2.volume = volume;
+            if (audioPlayerFallback3) audioPlayerFallback3.volume = volume;
             volumeValue.textContent = Math.round(volume * 100) + '%';
             localStorage.setItem('volume', volume.toString());
         }
