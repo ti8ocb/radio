@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radio Streaming Pro - Versión Definitiva</title>
+    <title>Radio Streaming Pro - Versión Estable</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- ✅ Solución para favicon 404 -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon" sizes="any">
+    <link rel="shortcut icon" type="image/ico" href="favicon.ico">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         :root {
             --primary-color: #6366f1;
             --secondary-color: #8b5cf6;
@@ -29,7 +31,6 @@
             --text-secondary: #94a3b8;
             --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--dark-bg);
@@ -38,16 +39,14 @@
             overflow-x: hidden;
             transition: all 0.3s ease;
         }
-
+        /* ✅ Tema claro más suave */
         body.light-mode {
-            --dark-bg: #f8fafc;
+            --dark-bg: #f1f5f9;
             --dark-surface: #ffffff;
             --dark-border: #e2e8f0;
-            --text-primary: #0f172a;
+            --text-primary: #1e293b;
             --text-secondary: #64748b;
         }
-
-        /* Animated Background */
         .animated-bg {
             position: fixed;
             top: 0;
@@ -58,24 +57,6 @@
             opacity: 0.1;
             z-index: -1;
         }
-
-        .animated-bg::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, #6366f1 0%, transparent 70%);
-            animation: rotate 30s linear infinite;
-        }
-
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Glassmorphism Effect */
         .glass {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
@@ -83,21 +64,17 @@
             border-radius: 20px;
             box-shadow: var(--shadow);
         }
-
         body.light-mode .glass {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(0, 0, 0, 0.1);
         }
-
-        /* Header */
         .header {
             position: relative;
             padding: 2rem 0;
             text-align: center;
             margin-bottom: 2rem;
         }
-
         .header h1 {
             font-size: 3rem;
             font-weight: 800;
@@ -106,14 +83,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 1rem;
-            animation: glow 2s ease-in-out infinite alternate;
         }
-
-        @keyframes glow {
-            from { filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.3)); }
-            to { filter: drop-shadow(0 0 30px rgba(236, 72, 153, 0.5)); }
-        }
-
         .time-display {
             display: flex;
             justify-content: center;
@@ -121,7 +91,6 @@
             gap: 1rem;
             flex-wrap: wrap;
         }
-
         .clock-widget {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             padding: 1rem 2rem;
@@ -130,75 +99,32 @@
             font-size: 1.2rem;
             font-weight: bold;
             box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
-            animation: pulse 2s ease-in-out infinite;
         }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        /* Main Layout */
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 1rem;
         }
-
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
             margin-bottom: 2rem;
         }
-
         @media (max-width: 1024px) {
             .main-grid {
                 grid-template-columns: 1fr;
             }
         }
-
-        /* Player Section */
         .player-section {
             position: relative;
             overflow: hidden;
         }
-
-        .visualizer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.3;
-            z-index: 1;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            padding: 0 2rem;
-            pointer-events: none;
-        }
-
-        .visualizer-bar {
-            width: 6px;
-            background: linear-gradient(to top, var(--primary-color), var(--accent-color), var(--warning-color));
-            border-radius: 3px 3px 0 0;
-            transform-origin: bottom;
-            transition: height 0.1s ease;
-            min-height: 10px;
-        }
-
         .player-content {
             position: relative;
             z-index: 2;
             padding: 2rem;
         }
-
-        /* Station Selector */
-        .station-selector {
-            margin-bottom: 2rem;
-        }
-
         .station-selector select {
             width: 100%;
             padding: 1rem;
@@ -210,31 +136,15 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
         body.light-mode .station-selector select {
-            background: var(--light-surface);
-            border-color: var(--light-border);
-            color: var(--text-primary);
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #1e293b;
         }
-
-        .station-selector select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        /* Current Station Display */
         .current-station {
             text-align: center;
             margin-bottom: 2rem;
         }
-
-        .station-logo-container {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 1.5rem;
-        }
-
         .station-logo {
             width: 150px;
             height: 150px;
@@ -242,18 +152,16 @@
             object-fit: cover;
             border: 4px solid var(--primary-color);
             box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-            transition: all 0.3s ease;
+            margin: 0 auto 1.5rem;
+            display: block;
         }
-
         .station-logo.playing {
             animation: rotate-logo 10s linear infinite;
         }
-
         @keyframes rotate-logo {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
         .station-name {
             font-size: 1.8rem;
             font-weight: 700;
@@ -263,13 +171,10 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .station-country {
             color: var(--text-secondary);
             font-size: 1rem;
         }
-
-        /* Controls */
         .controls {
             display: flex;
             justify-content: center;
@@ -278,7 +183,6 @@
             margin-bottom: 2rem;
             flex-wrap: wrap;
         }
-
         .control-btn {
             width: 60px;
             height: 60px;
@@ -294,42 +198,30 @@
             align-items: center;
             justify-content: center;
         }
-
         .control-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
         }
-
-        .control-btn:active {
-            transform: translateY(-1px);
-        }
-
         .control-btn.play-pause {
             width: 80px;
             height: 80px;
             font-size: 2rem;
         }
-
         .control-btn.favorite {
             background: linear-gradient(135deg, var(--danger-color), var(--warning-color));
         }
-
         .control-btn.favorite.active {
             background: linear-gradient(135deg, var(--warning-color), var(--success-color));
         }
-
-        /* Volume Control */
         .volume-control {
             margin-bottom: 2rem;
         }
-
         .volume-label {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
         }
-
         .volume-slider {
             width: 100%;
             height: 8px;
@@ -339,11 +231,9 @@
             cursor: pointer;
             -webkit-appearance: none;
         }
-
         body.light-mode .volume-slider {
             background: var(--light-border);
         }
-
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 24px;
@@ -353,25 +243,12 @@
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
         }
-
-        .volume-slider::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
-        }
-
-        /* Stats */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }
-
         .stat-card {
             text-align: center;
             padding: 1.5rem;
@@ -379,7 +256,6 @@
             border-radius: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
         .stat-value {
             font-size: 2rem;
             font-weight: 700;
@@ -388,24 +264,19 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .stat-label {
             color: var(--text-secondary);
             font-size: 0.9rem;
             margin-top: 0.5rem;
         }
-
-        /* Sidebar */
         .sidebar {
             display: flex;
             flex-direction: column;
             gap: 2rem;
         }
-
         .section {
             padding: 2rem;
         }
-
         .section-title {
             font-size: 1.5rem;
             font-weight: 700;
@@ -414,12 +285,9 @@
             align-items: center;
             gap: 0.5rem;
         }
-
         .section-title i {
             color: var(--primary-color);
         }
-
-        /* Station Lists */
         .station-list {
             display: flex;
             flex-direction: column;
@@ -428,21 +296,17 @@
             overflow-y: auto;
             padding-right: 0.5rem;
         }
-
         .station-list::-webkit-scrollbar {
             width: 6px;
         }
-
         .station-list::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 3px;
         }
-
         .station-list::-webkit-scrollbar-thumb {
             background: var(--primary-color);
             border-radius: 3px;
         }
-
         .station-item {
             display: flex;
             align-items: center;
@@ -453,13 +317,11 @@
             transition: all 0.3s ease;
             border: 1px solid transparent;
         }
-
         .station-item:hover {
             background: rgba(255, 255, 255, 0.1);
             border-color: var(--primary-color);
             transform: translateX(5px);
         }
-
         .station-item img {
             width: 50px;
             height: 50px;
@@ -467,28 +329,22 @@
             object-fit: cover;
             border: 2px solid var(--primary-color);
         }
-
         .station-item-info {
             flex: 1;
         }
-
         .station-item-name {
             font-weight: 600;
             margin-bottom: 0.25rem;
         }
-
         .station-item-country {
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
-
-        /* Action Buttons */
         .action-buttons {
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
         }
-
         .action-btn {
             flex: 1;
             padding: 1rem;
@@ -503,28 +359,22 @@
             gap: 0.5rem;
             min-width: 150px;
         }
-
         .whatsapp-btn {
             background: linear-gradient(135deg, #25d366, #128c7e);
             color: white;
         }
-
         .whatsapp-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
         }
-
         .notification-btn {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
         }
-
         .notification-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
         }
-
-        /* Theme Toggle */
         .theme-toggle {
             position: fixed;
             top: 2rem;
@@ -541,13 +391,10 @@
             transition: all 0.3s ease;
             box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
         }
-
         .theme-toggle:hover {
             transform: scale(1.1);
             box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
         }
-
-        /* Mobile theme toggle */
         @media (max-width: 768px) {
             .theme-toggle {
                 top: 1rem;
@@ -557,8 +404,6 @@
                 font-size: 1.2rem;
             }
         }
-
-        /* Notifications */
         .notification {
             position: fixed;
             top: 8rem;
@@ -576,13 +421,10 @@
             max-width: 90%;
             text-align: center;
         }
-
         .notification.show {
             transform: translateX(-50%) translateY(0);
             opacity: 1;
         }
-
-        /* Stream Error Notification */
         .stream-error {
             position: fixed;
             top: 12rem;
@@ -600,155 +442,54 @@
             max-width: 90%;
             text-align: center;
         }
-
         .stream-error.show {
             transform: translateX(-50%) translateY(0);
             opacity: 1;
         }
-
-        /* Mobile notification position */
         @media (max-width: 768px) {
             .notification {
                 top: 6rem;
                 padding: 0.8rem 1.5rem;
                 font-size: 0.9rem;
             }
-            
             .stream-error {
                 top: 10rem;
                 padding: 0.8rem 1.5rem;
                 font-size: 0.9rem;
             }
         }
-
-        /* Loading Animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Browser Compatibility Info - MOVED TO RIGHT */
-        .compatibility-info {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 1rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            max-width: 300px;
-            z-index: 1000;
-        }
-
-        .compatibility-info h4 {
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-        }
-
-        /* Responsive Design */
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
             }
-            
             .controls {
                 gap: 0.5rem;
             }
-            
             .control-btn {
                 width: 50px;
                 height: 50px;
                 font-size: 1.2rem;
             }
-            
             .control-btn.play-pause {
                 width: 70px;
                 height: 70px;
                 font-size: 1.8rem;
             }
-            
             .action-buttons {
                 flex-direction: column;
             }
-            
             .action-btn {
                 min-width: auto;
-            }
-            
-            .compatibility-info {
-                display: none;
-            }
-        }
-
-        /* Audio Player Fallback Styles */
-        .audio-fallback {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid var(--danger-color);
-            border-radius: 12px;
-            margin: 1rem 0;
-        }
-
-        .audio-fallback.show {
-            display: block;
-        }
-
-        .format-info {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .format-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            background: rgba(99, 102, 241, 0.2);
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        /* Edge specific fixes */
-        @supports (-ms-ime-align: auto) {
-            .visualizer-bar {
-                background: linear-gradient(to top, #6366f1, #ec4899);
-            }
-        }
-
-        /* Firefox specific fixes */
-        @-moz-document url-prefix() {
-            .volume-slider {
-                background: var(--dark-border);
             }
         }
     </style>
 </head>
 <body>
     <div class="animated-bg"></div>
-    
     <div class="container">
-        <!-- Theme Toggle -->
         <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">
             <i class="fas fa-moon" id="theme-icon"></i>
         </button>
-
-        <!-- Header -->
         <header class="header">
             <h1><i class="fas fa-broadcast-tower"></i> Radio Streaming Pro</h1>
             <div class="time-display">
@@ -758,29 +499,18 @@
                 </div>
             </div>
         </header>
-
-        <!-- Main Grid -->
         <div class="main-grid">
-            <!-- Player Section -->
             <div class="player-section glass">
-                <div class="visualizer" id="visualizer"></div>
                 <div class="player-content">
-                    <!-- Station Selector -->
                     <div class="station-selector">
                         <select id="stationSelect" onchange="changeStation(this.value)">
                             <option value="">Selecciona una emisora...</option>
                         </select>
                     </div>
-
-                    <!-- Current Station -->
                     <div class="current-station">
-                        <div class="station-logo-container">
-                            <img id="currentLogo" src="https://picsum.photos/seed/radio1/150/150.jpg" alt="Logo" class="station-logo">
-                        </div>
+                        <img id="currentLogo" src="https://picsum.photos/seed/radio1/150/150.jpg" alt="Logo" class="station-logo">
                         <div class="station-name" id="currentName">Selecciona una emisora</div>
                         <div class="station-country" id="currentCountry">Costa Rica</div>
-                        
-                        <!-- Controls -->
                         <div class="controls">
                             <button class="control-btn" onclick="previousStation()" title="Anterior">
                                 <i class="fas fa-step-backward"></i>
@@ -795,8 +525,6 @@
                                 <i class="fas fa-heart" id="favoriteIcon"></i>
                             </button>
                         </div>
-
-                        <!-- Volume Control -->
                         <div class="volume-control">
                             <div class="volume-label">
                                 <span><i class="fas fa-volume-up"></i> Volumen</span>
@@ -804,8 +532,6 @@
                             </div>
                             <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.1" value="0.7" onchange="changeVolume(this.value)">
                         </div>
-
-                        <!-- Stats -->
                         <div class="stats-grid">
                             <div class="stat-card">
                                 <div class="stat-value" id="listenerCount">0</div>
@@ -820,20 +546,6 @@
                                 <div class="stat-label">Favoritos</div>
                             </div>
                         </div>
-
-                        <!-- Audio Fallback Info -->
-                        <div class="audio-fallback" id="audioFallback">
-                            <h4><i class="fas fa-exclamation-triangle"></i> Problema de compatibilidad</h4>
-                            <p>Tu navegador tiene problemas con el formato de audio actual.</p>
-                            <div class="format-info">
-                                <span class="format-badge">MP3</span>
-                                <span class="format-badge">AAC</span>
-                                <span class="format-badge">HLS</span>
-                                <span class="format-badge">OGG</span>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
                         <div class="action-buttons">
                             <button class="action-btn whatsapp-btn" onclick="shareOnWhatsApp()">
                                 <i class="fab fa-whatsapp"></i> Compartir
@@ -845,10 +557,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Sidebar -->
             <div class="sidebar">
-                <!-- Favorites -->
                 <div class="section glass">
                     <h3 class="section-title">
                         <i class="fas fa-star"></i> Favoritos
@@ -860,8 +569,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Recent Stations -->
                 <div class="section glass">
                     <h3 class="section-title">
                         <i class="fas fa-history"></i> Recientes
@@ -876,68 +583,49 @@
             </div>
         </div>
     </div>
-
-    <!-- Hidden Audio Players -->
-    <audio id="audioPlayer" preload="none" crossorigin="anonymous"></audio>
-    <audio id="audioPlayerFallback" preload="none" crossorigin="anonymous"></audio>
-    <audio id="audioPlayerFallback2" preload="none" crossorigin="anonymous"></audio>
-    <audio id="audioPlayerFallback3" preload="none" crossorigin="anonymous"></audio>
-
-    <!-- Notification -->
+    <audio id="audioPlayer" preload="metadata"></audio>
     <div id="notification" class="notification">
         <i class="fas fa-info-circle"></i> <span id="notificationText"></span>
     </div>
-
-    <!-- Stream Error Notification -->
     <div id="streamError" class="stream-error">
         <i class="fas fa-exclamation-triangle"></i> <span id="streamErrorText"></span>
     </div>
-
-    <!-- Browser Compatibility Info - MOVED TO RIGHT -->
-    <div class="compatibility-info">
-        <h4><i class="fas fa-browser"></i> Compatibilidad</h4>
-        <div id="browserInfo">Detectando navegador...</div>
-        <div id="audioSupport">Soporte de audio...</div>
-    </div>
-
     <script>
-        // Radio stations data
         const stations = [
-            { id: '1', name: 'Unción 106.7 FM', url: 'https://centova.hostingtico.com:7016/;stream.mp3', logo: 'https://cdn-radiotime-logos.tunein.com/s25054d.png', color: '#5e72e4', country: 'Costa Rica' },
-            { id: '2', name: 'Oldies Hits Español', url: 'https://centova01.logicahost.com.br:20038/autodj', logo: 'https://cdn-profiles.tunein.com/s232911/images/logod.png', color: '#f5365c', country: 'España' },
-            { id: '3', name: 'Oldies Hits 70´s y 80´s', url: 'https://centova01.logicahost.com.br:20037/autodj', logo: 'https://cdn-profiles.tunein.com/s123079/images/logod.png', color: '#fb6340', country: 'España' },
-            { id: '4', name: 'Amor FM 93.9', url: 'https://player.hostingtico.com/proxy/8094', logo: 'https://static.mytuner.mobi/media/tvos_radios/440/amor-fm-939.07d03e3b.jpg', color: '#ffd600', country: 'Costa Rica' },
-            { id: '5', name: 'La Caliente 90.7FM', url: 'https://18863.live.streamtheworld.com/LA_CALIENTE_CR.mp3', logo: 'https://static.mytuner.mobi/media/tvos_radios/166/la-caliente-907-fm.7524ad1c.png', color: '#11cdef', country: 'Costa Rica' },
-            { id: '6', name: 'IQ, La Radio Inteligente 93.9 fm', url: 'http://rtvhd.net:9942/', logo: 'https://static.mytuner.mobi/media/tvos_radios/y2z6ngbnd4ml.png', color: '#2dce89', country: 'Costa Rica' },
-            { id: '7', name: 'Onda Brava Radio', url: 'http://cast4.my-control-panel.com/proxy/ondabra3/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/842/onda-brava.6e844700.png', color: '#f5365c', country: 'Costa Rica' },
-            { id: '8', name: 'Azul 99.9 Lo mejor de tu vida', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/CRC_999AAC_SC', logo: 'https://static.mytuner.mobi/media/tvos_radios/154/azul-999-fm.c964f3b8.jpg', color: '#5603ad', country: 'Costa Rica' },
-            { id: '9', name: 'Radio Omega', url: 'http://rtvhd.net:9932/', logo: 'https://static.mytuner.mobi/media/tvos_radios/CwACYSkeK6.png', color: '#172b4d', country: 'Costa Rica' },
-            { id: '10', name: 'La Tropical Online', url: 'https://radio.grscr.com/listen/la_tropical/radio.mp3', logo: 'https://latropical.online/wp-content/uploads/2021/10/logo-plateado.png', color: '#32325d', country: 'Costa Rica' },
-            { id: '11', name: 'Orotina Online Radio', url: 'https://stream.zeno.fm/wq6egm5ywrquv', logo: 'https://picsum.photos/seed/orotina/150/150.jpg', color: '#8898aa', country: 'Costa Rica' },
-            { id: '12', name: 'Radio Nosara', url: 'https://sonicpanel.zonaradio.net/8038/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/848/radio-nosara.2ab18d0e.jpg', color: '#525f7f', country: 'Costa Rica' },
-            { id: '13', name: 'Columbia 98.7 FM / CR', url: 'https://s2.radio.co/s83b86382e/listen', logo: 'https://static.mytuner.mobi/media/tvos_radios/EYDaxpE6Q4.png', color: '#f4f5f7', country: 'Costa Rica' },
-            { id: '14', name: 'Conexión Urbana / CR', url: 'http://stream.zeno.fm/q4g3r414ztzuv', logo: 'https://static.mytuner.mobi/media/tvos_radios/160/conexion-urbana.da9a3caa.png', color: '#5e72e4', country: 'Costa Rica' },
-            { id: '15', name: 'Guanacaste FM 80s 90s y más', url: 'https://stream10.usastreams.com/8008/guanacastefm', logo: 'https://static.mytuner.mobi/media/tvos_radios/100/guanacaste-fm.c638f92a.jpg', color: '#8965e0', country: 'Costa Rica' },
-            { id: '16', name: '15 Radio Musical 97.5FM', url: 'https://live.turadio.stream:7005/stream?type=http&nocache=596', logo: 'https://static.mytuner.mobi/media/tvos_radios/DwhGDNNVvb.jpg', color: '#fb6340', country: 'Costa Rica' },
-            { id: '17', name: 'Radio Sinfonola 90.3 FM', url: 'https://live.turadio.stream:7006/', logo: 'https://static.mytuner.mobi/media/tvos_radios/415/radio-sinfonola.79d5c3e6.png', color: '#2dce89', country: 'Costa Rica' },
-            { id: '18', name: 'Radio 2, 99.5 fm', url: 'https://s5.radio.co/sd515b7b34/listen', logo: 'https://cdn-radiotime-logos.tunein.com/s13187d.png', color: '#11cdef', country: 'Costa Rica' },
-            { id: '19', name: 'Radio Sinaí / Pz.', url: 'https://centova12.instainternet.com/proxy/sinaicr/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/174/radio-sinai.5f89bfcb.png', color: '#f5365c', country: 'Costa Rica' },
-            { id: '20', name: 'Bésame 89.9 FM', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/BESAME_CR.mp3', logo: 'https://static.mytuner.mobi/media/tvos_radios/N4GCpM7GT7.png', color: '#5603ad', country: 'Costa Rica' },
-            { id: '21', name: 'M.R.O.C, Aerop Int SJO', url: 'http://d.liveatc.net/mroc', logo: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/77/30/90/773090a1-2d1f-e8cc-1d7f-f697cb476782/AppIcon-0-0-1x_U007emarketing-0-7-0-85-220.png/230x0w.webp', color: '#172b4d', country: 'Costa Rica' },
-            { id: '22', name: 'Radio Corporación / Ni', url: 'https://stream.zeno.fm/gwkd66k0a7duv', logo: 'https://static.mytuner.mobi/media/tvos_radios/JVf3FrARwB.jpg', color: '#32325d', country: 'Nicaragua' },
-            { id: '23', name: 'Radio La Sandino / Ni', url: 'http://streaming.lasandino.com.ni:8020/lasandino.mp3', logo: 'https://cdn-profiles.tunein.com/s13259/images/logod.png', color: '#8898aa', country: 'Nicaragua' },
-            { id: '24', name: 'La Nueva Radio Ya!', url: 'https://stream.zenolive.com/6nwu9a6uwz4tv.aac', logo: 'https://static.mytuner.mobi/media/tvos_radios/amgybJM7u7.png', color: '#525f7f', country: 'Nicaragua' },
-            { id: '25', name: 'Radio La Tuani en vivo', url: 'http://server.multimediamb.com/9300/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/KArdnuqZLu.png', color: '#f4f5f7', country: 'Nicaragua' },
-            { id: '26', name: 'Siuna La Poderosa', url: 'https://polaris.hostingnica.net/8012/stream/1/', logo: 'https://cdn-profiles.tunein.com/s239858/images/logod.png', color: '#5e72e4', country: 'Nicaragua' },
-            { id: '27', name: 'Radio Bonanza', url: 'https://stream.zeno.fm/hj27louo82ptv', logo: 'https://cdn.instant.audio/images/logos/radios-co-ni/bonanza.png', color: '#8965e0', country: 'Nicaragua' },
-            { id: '28', name: 'Omega Stereo Panamá', url: 'https://www.streaming507.net:8048/stream', logo: 'https://radios-panama.com/uploads/img/omega-stereo.jpg', color: '#fb6340', country: 'Panamá' },
-            { id: '29', name: 'Actualidad 90.3 FM', url: 'https://acp4.lorini.net/proxy/ur2080?mp=/stream', logo: 'https://liveonlineradio.net/wp-content/uploads/2015/03/Actualidad-90.3-FM.jpg', color: '#2dce89', country: 'Venezuela' },
-            { id: '30', name: 'Caracol Radio 100.9 FM', url: 'https://27373.live.streamtheworld.com/CARACOL_RADIOAAC.aac?dist=onlineradiobox', logo: 'https://cdn.onlineradiobox.com/img/l/0/21440.v18.png', color: '#11cdef', country: 'Venezuela' },
-            { id: '31', name: 'Radio La Voz de Carabobo 1040 AM', url: 'https://guri.tepuyserver.net/8086/stream', logo: 'https://cdn.onlineradiobox.com/img/l/7/120377.v1.png', color: '#f5365c', country: 'Venezuela' },
-            { id: '32', name: '34 Tamá Stereo 103.9 FM / San Cristóbal', url: 'https://guri.tepuyserver.net/8457/stream;', logo: 'https://cdn.onlineradiobox.com/img/l/2/60312.v9.png', color: '#5603ad', country: 'Venezuela' }
+            { id: '1', name: 'Unción 106.7 FM', url: "https://centova.hostingtico.com:7016/;stream.mp3", logo: 'https://cdn-radiotime-logos.tunein.com/s25054d.png', country: 'Costa Rica' },
+            { id: '2', name: 'Oldies Hits Español', url: "https://centova01.logicahost.com.br:20038/autodj", logo: 'https://cdn-profiles.tunein.com/s232911/images/logod.png', country: 'España' },
+            { id: '3', name: 'Oldies Hits 70´s y 80´s', url: 'https://centova01.logicahost.com.br:20037/autodj', logo: 'https://cdn-profiles.tunein.com/s123079/images/logod.png', country: 'España' },
+            { id: '4', name: 'Amor FM 93.9', url: 'https://player.hostingtico.com/proxy/8094', logo: 'https://static.mytuner.mobi/media/tvos_radios/440/amor-fm-939.07d03e3b.jpg', country: 'Costa Rica' },
+            { id: '5', name: 'La Caliente 90.7FM', url: 'https://18863.live.streamtheworld.com/LA_CALIENTE_CR.mp3', logo: 'https://static.mytuner.mobi/media/tvos_radios/166/la-caliente-907-fm.7524ad1c.png', country: 'Costa Rica' },
+            { id: '6', name: 'IQ, La Radio Inteligente 93.9 fm', url: 'http://rtvhd.net:9942/', logo: 'https://static.mytuner.mobi/media/tvos_radios/y2z6ngbnd4ml.png', country: 'Costa Rica' },
+            { id: '7', name: 'Onda Brava Radio', url: 'http://cast4.my-control-panel.com/proxy/ondabra3/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/842/onda-brava.6e844700.png', country: 'Costa Rica' },
+            { id: '8', name: 'Azul 99.9 Lo mejor de tu vida', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/CRC_999AAC_SC', logo: 'https://static.mytuner.mobi/media/tvos_radios/154/azul-999-fm.c964f3b8.jpg', country: 'Costa Rica' },
+            { id: '9', name: 'Radio Omega', url: 'http://rtvhd.net:9932/', logo: 'https://static.mytuner.mobi/media/tvos_radios/CwACYSkeK6.png', country: 'Costa Rica' },
+            { id: '10', name: 'La Tropical Online', url: 'https://radio.grscr.com/listen/la_tropical/radio.mp3', logo: 'https://latropical.online/wp-content/uploads/2021/10/logo-plateado.png', country: 'Costa Rica' },
+            { id: '11', name: 'Orotina Online Radio', url: 'https://stream.zeno.fm/wq6egm5ywrquv', logo: 'https://picsum.photos/seed/orotina/150/150.jpg', country: 'Costa Rica' },
+            { id: '12', name: 'Radio Nosara', url: 'https://sonicpanel.zonaradio.net/8038/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/848/radio-nosara.2ab18d0e.jpg', country: 'Costa Rica' },
+            { id: '13', name: 'Columbia 98.7 FM / CR', url: 'https://s2.radio.co/s83b86382e/listen', logo: 'https://static.mytuner.mobi/media/tvos_radios/EYDaxpE6Q4.png', country: 'Costa Rica' },
+            { id: '14', name: 'Conexión Urbana / CR', url: 'http://stream.zeno.fm/q4g3r414ztzuv', logo: 'https://static.mytuner.mobi/media/tvos_radios/160/conexion-urbana.da9a3caa.png', country: 'Costa Rica' },
+            { id: '15', name: 'Guanacaste FM 80s 90s y más', url: 'https://stream10.usastreams.com/8008/guanacastefm', logo: 'https://static.mytuner.mobi/media/tvos_radios/100/guanacaste-fm.c638f92a.jpg', country: 'Costa Rica' },
+            { id: '16', name: '15 Radio Musical 97.5FM', url: 'https://live.turadio.stream:7005/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/DwhGDNNVvb.jpg', country: 'Costa Rica' },
+            { id: '17', name: 'Radio Sinfonola 90.3 FM', url: 'https://live.turadio.stream:7006/', logo: 'https://static.mytuner.mobi/media/tvos_radios/415/radio-sinfonola.79d5c3e6.png', country: 'Costa Rica' },
+            { id: '18', name: 'Radio 2, 99.5 fm', url: 'https://s5.radio.co/sd515b7b34/listen', logo: 'https://cdn-radiotime-logos.tunein.com/s13187d.png', country: 'Costa Rica' },
+            { id: '19', name: 'Radio Sinaí / Pz.', url: 'https://centova12.instainternet.com/proxy/sinaicr/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/174/radio-sinai.5f89bfcb.png', country: 'Costa Rica' },
+            { id: '20', name: 'Bésame 89.9 FM', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/BESAME_CR.mp3', logo: 'https://static.mytuner.mobi/media/tvos_radios/N4GCpM7GT7.png', country: 'Costa Rica' },
+            { id: '21', name: 'M.R.O.C, Aerop Int SJO', url: 'http://d.liveatc.net/mroc', logo: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/77/30/90/773090a1-2d1f-e8cc-1d7f-f697cb476782/AppIcon-0-0-1x_U007emarketing-0-7-0-85-220.png/230x0w.webp', country: 'Costa Rica' },
+            { id: '22', name: 'Radio Corporación / Ni', url: 'https://stream.zeno.fm/gwkd66k0a7duv', logo: 'https://static.mytuner.mobi/media/tvos_radios/JVf3FrARwB.jpg', country: 'Nicaragua' },
+            { id: '23', name: 'Radio La Sandino / Ni', url: 'http://streaming.lasandino.com.ni:8020/lasandino.mp3', logo: 'https://cdn-profiles.tunein.com/s13259/images/logod.png', country: 'Nicaragua' },
+            { id: '24', name: 'La Nueva Radio Ya!', url: 'https://stream.zenolive.com/6nwu9a6uwz4tv.aac', logo: 'https://static.mytuner.mobi/media/tvos_radios/amgybJM7u7.png', country: 'Nicaragua' },
+            { id: '25', name: 'Radio La Tuani en vivo', url: 'http://server.multimediamb.com/9300/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/KArdnuqZLu.png', country: 'Nicaragua' },
+            { id: '26', name: 'Siuna La Poderosa', url: 'https://polaris.hostingnica.net/8012/stream/1/', logo: 'https://cdn-profiles.tunein.com/s239858/images/logod.png', country: 'Nicaragua' },
+            { id: '27', name: 'Radio Bonanza', url: 'https://stream.zeno.fm/hj27louo82ptv', logo: 'https://cdn.instant.audio/images/logos/radios-co-ni/bonanza.png', country: 'Nicaragua' },
+            { id: '28', name: 'Omega Stereo Panamá', url: 'https://www.streaming507.net:8048/stream', logo: 'https://radios-panama.com/uploads/img/omega-stereo.jpg', country: 'Panamá' },
+            { id: '29', name: 'Actualidad 90.3 FM', url: 'https://acp4.lorini.net/proxy/ur2080?mp=/stream', logo: 'https://liveonlineradio.net/wp-content/uploads/2015/03/Actualidad-90.3-FM.jpg', country: 'Venezuela' },
+            { id: '30', name: 'Caracol Radio 100.9 FM', url: 'https://27373.live.streamtheworld.com/CARACOL_RADIOAAC.aac?dist=onlineradiobox', logo: 'https://cdn.onlineradiobox.com/img/l/0/21440.v18.png', country: 'Venezuela' },
+            { id: '31', name: 'Radio La Voz de Carabobo 1040 AM', url: 'https://guri.tepuyserver.net/8086/stream', logo: 'https://cdn.onlineradiobox.com/img/l/7/120377.v1.png', country: 'Venezuela' },
+            { id: '32', name: '34 Tamá Stereo 103.9 FM / San Cristóbal', url: 'https://guri.tepuyserver.net/8457/stream;', logo: 'https://cdn.onlineradiobox.com/img/l/2/60312.v9.png', country: 'Venezuela' }
         ];
 
-        // App state
         let currentStation = null;
         let isPlaying = false;
         let volume = 0.7;
@@ -945,39 +633,8 @@
         let favorites = [];
         let recentStations = [];
         let listenerCount = 0;
-        let audioContext = null;
-        let analyser = null;
-        let dataArray = null;
-        let source = null;
-        let animationId = null;
-        let currentAudioPlayer = null;
-        let fallbackPlayer = null;
-        let fallbackPlayer2 = null;
-        let fallbackPlayer3 = null;
-        let useFallback = false;
-        let useFallback2 = false;
-        let useFallback3 = false;
-        let visualizerInterval = null;
 
-        // Browser detection
-        const browserInfo = {
-            name: '',
-            version: '',
-            supportsHLS: false,
-            supportsAudio: true,
-            supportsWebAudio: false,
-            isEdge: false,
-            isFirefox: false,
-            isChrome: false,
-            isSafari: false,
-            isMobile: false
-        };
-
-        // DOM elements
         const audioPlayer = document.getElementById('audioPlayer');
-        const audioPlayerFallback = document.getElementById('audioPlayerFallback');
-        const audioPlayerFallback2 = document.getElementById('audioPlayerFallback2');
-        const audioPlayerFallback3 = document.getElementById('audioPlayerFallback3');
         const stationSelect = document.getElementById('stationSelect');
         const currentLogo = document.getElementById('currentLogo');
         const currentName = document.getElementById('currentName');
@@ -998,130 +655,60 @@
         const notificationText = document.getElementById('notificationText');
         const streamError = document.getElementById('streamError');
         const streamErrorText = document.getElementById('streamErrorText');
-        const visualizer = document.getElementById('visualizer');
-        const audioFallback = document.getElementById('audioFallback');
-        const browserInfoEl = document.getElementById('browserInfo');
-        const audioSupportEl = document.getElementById('audioSupport');
 
-        // Initialize app
         function initApp() {
-            console.log('🎉 ¡Hola Óscar! Tu app de radio definitiva está lista.');
-            
-            // Detect browser capabilities
-            detectBrowserCapabilities();
-            
-            // Load saved preferences
+            console.log('✅ ¡Hola Óscar! App de radio ESTABLE y FUNCIONAL.');
             loadPreferences();
-            
-            // Populate station selector
             populateStationSelector();
-            
-            // Setup audio players
-            setupAudioPlayers();
-            
-            // Initialize Web Audio API if supported
-            initWebAudioAPI();
-            
-            // Create visualizer
-            createVisualizer();
-            
-            // Start clock
+            setupAudioPlayer();
             updateClock();
             setInterval(updateClock, 1000);
-            
-            // Start listener count
             updateListenerCount();
             setInterval(updateListenerCount, 30000);
-            
-            // Setup keyboard controls
             setupKeyboardControls();
             
-            // Auto-select first station
-            if (stations.length > 0) {
-                changeStation(stations[0].id);
+            // ✅ Cargar "Unción 106.7 FM" al iniciar (sin reproducir)
+            const uncionStation = stations.find(s => s.name === "Unción 106.7 FM");
+            if (uncionStation) {
+                currentStation = uncionStation;
+                currentLogo.src = uncionStation.logo;
+                currentName.textContent = uncionStation.name;
+                currentCountry.textContent = uncionStation.country;
+                stationSelect.value = uncionStation.id;
+                audioPlayer.src = uncionStation.url; // Solo carga la URL, no reproduce
+                updateFavoriteButton();
+                showNotification('📻 ¡Listo! Presiona, Enter o ▶');
             }
         }
 
-        // Detect browser capabilities
-        function detectBrowserCapabilities() {
-            const userAgent = navigator.userAgent;
-            
-            // Detect if mobile
-            browserInfo.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-            
-            // Detect browser
-            if (userAgent.indexOf('Edg') > -1) {
-                browserInfo.name = 'Edge';
-                browserInfo.isEdge = true;
-                browserInfo.supportsHLS = true;
-                browserInfo.supportsWebAudio = true;
-            } else if (userAgent.indexOf('Chrome') > -1) {
-                browserInfo.name = 'Chrome';
-                browserInfo.isChrome = true;
-                browserInfo.supportsHLS = true;
-                browserInfo.supportsWebAudio = true;
-            } else if (userAgent.indexOf('Firefox') > -1) {
-                browserInfo.name = 'Firefox';
-                browserInfo.isFirefox = true;
-                browserInfo.supportsHLS = false;
-                browserInfo.supportsWebAudio = true;
-            } else if (userAgent.indexOf('Safari') > -1) {
-                browserInfo.name = 'Safari';
-                browserInfo.isSafari = true;
-                browserInfo.supportsHLS = true;
-                browserInfo.supportsWebAudio = true;
-            } else if (userAgent.indexOf('Opera') > -1) {
-                browserInfo.name = 'Opera';
-                browserInfo.supportsHLS = true;
-                browserInfo.supportsWebAudio = true;
-            } else {
-                browserInfo.name = 'Unknown';
-                browserInfo.supportsHLS = false;
-                browserInfo.supportsWebAudio = false;
-            }
-
-            // Check audio support
-            browserInfo.supportsAudio = !!document.createElement('audio').canPlayType;
-            
-            // Update UI
-            browserInfoEl.textContent = `${browserInfo.name} ${browserInfo.isMobile ? '(Móvil)' : '(Desktop)'} - Soporte completo`;
-            audioSupportEl.textContent = `Audio: ${browserInfo.supportsAudio ? '✅' : '❌'} | HLS: ${browserInfo.supportsHLS ? '✅' : '❌'} | WebAudio: ${browserInfo.supportsWebAudio ? '✅' : '❌'}`;
-        }
-
-        // Load preferences from localStorage
         function loadPreferences() {
             const savedDarkMode = localStorage.getItem('darkMode');
             const savedFavorites = localStorage.getItem('favorites');
             const savedRecentStations = localStorage.getItem('recentStations');
             const savedVolume = localStorage.getItem('volume');
-            
             if (savedDarkMode !== null) {
                 darkMode = savedDarkMode === 'true';
                 updateTheme();
             }
-            
             if (savedFavorites) {
                 favorites = JSON.parse(savedFavorites);
                 updateFavoritesList();
                 updateFavoriteCount();
             }
-            
             if (savedRecentStations) {
                 recentStations = JSON.parse(savedRecentStations);
                 updateRecentList();
             }
-            
             if (savedVolume) {
                 volume = parseFloat(savedVolume);
                 volumeSlider.value = volume;
                 volumeValue.textContent = Math.round(volume * 100) + '%';
+                audioPlayer.volume = volume;
             }
         }
 
-        // Populate station selector
         function populateStationSelector() {
             stationSelect.innerHTML = '<option value="">Selecciona una emisora...</option>';
-            
             stations.forEach(station => {
                 const option = document.createElement('option');
                 option.value = station.id;
@@ -1130,549 +717,99 @@
             });
         }
 
-        // Setup audio players with fallback support
-        function setupAudioPlayers() {
-            // Main audio player
+        function setupAudioPlayer() {
             audioPlayer.addEventListener('play', () => {
                 isPlaying = true;
                 updatePlayButton();
-                startVisualizer();
             });
-            
             audioPlayer.addEventListener('pause', () => {
                 isPlaying = false;
                 updatePlayButton();
-                stopVisualizer();
             });
-            
-            audioPlayer.addEventListener('error', (e) => {
-                console.error('Error en reproductor principal:', e);
-                handleAudioError();
+            audioPlayer.addEventListener('error', () => {
+                showStreamError('❌ Error al reproducir. Intenta otra emisora.');
+                isPlaying = false;
+                updatePlayButton();
             });
-            
             audioPlayer.addEventListener('canplay', () => {
-                console.log('Audio principal listo');
-                hideAudioFallback();
-                hideStreamError();
-            });
-
-            // Fallback audio player 1
-            audioPlayerFallback.addEventListener('play', () => {
-                isPlaying = true;
-                updatePlayButton();
-                startVisualizer();
-            });
-            
-            audioPlayerFallback.addEventListener('pause', () => {
-                isPlaying = false;
-                updatePlayButton();
-                stopVisualizer();
-            });
-            
-            audioPlayerFallback.addEventListener('error', (e) => {
-                console.error('Error en reproductor fallback 1:', e);
-                handleAudioError2();
-            });
-            
-            audioPlayerFallback.addEventListener('canplay', () => {
-                console.log('Audio fallback 1 listo');
-                hideAudioFallback();
-                hideStreamError();
-            });
-
-            // Fallback audio player 2
-            audioPlayerFallback2.addEventListener('play', () => {
-                isPlaying = true;
-                updatePlayButton();
-                startVisualizer();
-            });
-            
-            audioPlayerFallback2.addEventListener('pause', () => {
-                isPlaying = false;
-                updatePlayButton();
-                stopVisualizer();
-            });
-            
-            audioPlayerFallback2.addEventListener('error', (e) => {
-                console.error('Error en reproductor fallback 2:', e);
-                handleAudioError3();
-            });
-            
-            audioPlayerFallback2.addEventListener('canplay', () => {
-                console.log('Audio fallback 2 listo');
-                hideAudioFallback();
-                hideStreamError();
-            });
-
-            // Fallback audio player 3
-            audioPlayerFallback3.addEventListener('play', () => {
-                isPlaying = true;
-                updatePlayButton();
-                startVisualizer();
-            });
-            
-            audioPlayerFallback3.addEventListener('pause', () => {
-                isPlaying = false;
-                updatePlayButton();
-                stopVisualizer();
-            });
-            
-            audioPlayerFallback3.addEventListener('error', (e) => {
-                console.error('Error en reproductor fallback 3:', e);
-                showStreamError('Esta emisora no está disponible en este momento');
-                isPlaying = false;
-                updatePlayButton();
-            });
-            
-            audioPlayerFallback3.addEventListener('canplay', () => {
-                console.log('Audio fallback 3 listo');
-                hideAudioFallback();
                 hideStreamError();
             });
         }
 
-        // Initialize Web Audio API
-        function initWebAudioAPI() {
-            if (!browserInfo.supportsWebAudio) return;
-            
-            try {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioContext.createAnalyser();
-                analyser.fftSize = 256;
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
-            } catch (e) {
-                console.error('Error initializing Web Audio API:', e);
-            }
-        }
-
-        // Create visualizer
-        function createVisualizer() {
-            visualizer.innerHTML = '';
-            
-            for (let i = 0; i < 30; i++) {
-                const bar = document.createElement('div');
-                bar.className = 'visualizer-bar';
-                bar.style.height = '20px';
-                visualizer.appendChild(bar);
-            }
-        }
-
-        // Cleanup audio context to prevent connection errors
-        function cleanupAudioContext() {
-            if (source) {
-                try {
-                    source.disconnect();
-                    source = null;
-                } catch (e) {
-                    console.log('Error al desconectar source:', e);
-                }
-            }
-            
-            // Create new analyser for fresh connection
-            if (analyser && audioContext) {
-                analyser.disconnect();
-                analyser = audioContext.createAnalyser();
-                analyser.fftSize = 256;
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
-            }
-        }
-
-        // Start visualizer
-        function startVisualizer() {
-            // Stop any existing visualizer
-            stopVisualizer();
-            
-            if (browserInfo.supportsWebAudio && analyser && currentAudioPlayer && audioContext) {
-                // Connect audio context safely
-                connectVisualizer();
-            } else {
-                // Fallback visualizer
-                startFallbackVisualizer();
-            }
-        }
-
-        // Connect visualizer safely
-        function connectVisualizer() {
-            if (!currentAudioPlayer || !analyser || !audioContext) return;
-            
-            try {
-                cleanupAudioContext();
-                source = audioContext.createMediaElementSource(currentAudioPlayer);
-                source.connect(analyser);
-                analyser.connect(audioContext.destination);
-                console.log('Visualizer conectado exitosamente');
-                animateVisualizer();
-            } catch (error) {
-                console.error('Error al conectar visualizer:', error);
-                startFallbackVisualizer();
-            }
-        }
-
-        // Start fallback visualizer (random animation)
-        function startFallbackVisualizer() {
-            visualizerInterval = setInterval(() => {
-                if (!isPlaying) return;
-                
-                const bars = visualizer.querySelectorAll('.visualizer-bar');
-                bars.forEach((bar, index) => {
-                    const height = Math.random() * 150 + 20;
-                    bar.style.height = `${height}px`;
-                });
-            }, 100);
-        }
-
-        // Stop visualizer
-        function stopVisualizer() {
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-                animationId = null;
-            }
-            
-            if (visualizerInterval) {
-                clearInterval(visualizerInterval);
-                visualizerInterval = null;
-            }
-            
-            // Reset bars to minimum height
-            const bars = visualizer.querySelectorAll('.visualizer-bar');
-            bars.forEach(bar => {
-                bar.style.height = '10px';
-            });
-        }
-
-        // Animate visualizer
-        function animateVisualizer() {
-            if (!isPlaying) return;
-            
-            animationId = requestAnimationFrame(animateVisualizer);
-            
-            if (analyser && dataArray) {
-                analyser.getByteFrequencyData(dataArray);
-                
-                const bars = visualizer.querySelectorAll('.visualizer-bar');
-                bars.forEach((bar, index) => {
-                    const value = dataArray[index * 2] || 0;
-                    const height = Math.max(10, (value / 255) * 200);
-                    bar.style.height = `${height}px`;
-                });
-            }
-        }
-
-        // Handle audio error - try first fallback
-        function handleAudioError() {
-            if (!useFallback && currentStation) {
-                useFallback = true;
-                currentAudioPlayer = audioPlayerFallback;
-                
-                console.log('Intentando con fallback player 1...');
-                
-                // Try with fallback player 1
-                audioPlayerFallback.src = getOptimizedUrl(currentStation.url, 1);
-                audioPlayerFallback.play().catch(e => {
-                    console.error('Fallback 1 también falló:', e);
-                    handleAudioError2();
-                });
-            } else {
-                handleAudioError2();
-            }
-        }
-
-        // Handle audio error - try second fallback
-        function handleAudioError2() {
-            if (!useFallback2 && currentStation) {
-                useFallback2 = true;
-                currentAudioPlayer = audioPlayerFallback2;
-                
-                console.log('Intentando con fallback player 2...');
-                
-                // Try with fallback player 2
-                audioPlayerFallback2.src = getOptimizedUrl(currentStation.url, 2);
-                audioPlayerFallback2.play().catch(e => {
-                    console.error('Fallback 2 también falló:', e);
-                    handleAudioError3();
-                });
-            } else {
-                handleAudioError3();
-            }
-        }
-
-        // Handle audio error - try third fallback
-        function handleAudioError3() {
-            if (!useFallback3 && currentStation) {
-                useFallback3 = true;
-                currentAudioPlayer = audioPlayerFallback3;
-                
-                console.log('Intentando con fallback player 3...');
-                
-                // Try with fallback player 3
-                audioPlayerFallback3.src = getOptimizedUrl(currentStation.url, 3);
-                audioPlayerFallback3.play().catch(e => {
-                    console.error('Fallback 3 también falló:', e);
-                    showStreamError('Esta emisora no está disponible en este momento');
-                    isPlaying = false;
-                    updatePlayButton();
-                });
-            } else {
-                showStreamError('Esta emisora no está disponible en este momento');
-                isPlaying = false;
-                updatePlayButton();
-            }
-        }
-
-        // Get optimized URL based on browser, device and fallback level
-        function getOptimizedUrl(originalUrl, fallbackLevel) {
-            let url = originalUrl;
-            
-            // Edge specific optimizations
-            if (browserInfo.isEdge) {
-                if (fallbackLevel === 1) {
-                    // Try AAC format for Edge
-                    if (url.includes('.mp3') && !url.includes('streamtheworld.com')) {
-                        url = url.replace('.mp3', '.aac');
-                    }
-                    // For streamtheworld, try AAC format
-                    if (url.includes('streamtheworld.com') && url.includes('.mp3')) {
-                        url = url.replace('.mp3', '.aac');
-                    }
-                } else if (fallbackLevel === 2) {
-                    // Try removing parameters for Edge mobile
-                    if (browserInfo.isMobile) {
-                        url = url.split('?')[0];
-                    }
-                    // Try different protocol
-                    if (url.includes('http://')) {
-                        url = url.replace('http://', 'https://');
-                    }
-                } else if (fallbackLevel === 3) {
-                    // Last resort: try different streaming endpoints
-                    if (url.includes('streamtheworld.com')) {
-                        url = url.replace('streamtheworld.com', 'streamthe.world');
-                    }
-                    // For Onda Brava specific fix
-                    if (url.includes('cast4.my-control-panel.com')) {
-                        url = url.replace('cast4.my-control-panel.com', 'cast5.my-control-panel.com');
-                    }
-                }
-            }
-            
-            // Firefox specific optimizations
-            if (browserInfo.isFirefox) {
-                if (fallbackLevel === 1) {
-                    // Try OGG format for Firefox
-                    if (url.includes('.mp3') && !url.includes('streamtheworld.com')) {
-                        url = url.replace('.mp3', '.ogg');
-                    }
-                } else if (fallbackLevel === 2) {
-                    // Try removing parameters
-                    url = url.split('?')[0];
-                } else if (fallbackLevel === 3) {
-                    // Try different protocol
-                    if (url.includes('http://')) {
-                        url = url.replace('http://', 'https://');
-                    }
-                }
-            }
-            
-            // Chrome specific optimizations
-            if (browserInfo.isChrome) {
-                if (fallbackLevel === 1) {
-                    // Try AAC format for some streams
-                    if (url.includes('streamtheworld.com') && url.includes('.mp3')) {
-                        url = url.replace('.mp3', '.aac');
-                    }
-                } else if (fallbackLevel === 2) {
-                    // Try removing parameters for mobile
-                    if (browserInfo.isMobile) {
-                        url = url.split('?')[0];
-                    }
-                } else if (fallbackLevel === 3) {
-                    // Try different protocol
-                    if (url.includes('http://')) {
-                        url = url.replace('http://', 'https://');
-                    }
-                }
-            }
-            
-            // Safari specific optimizations
-            if (browserInfo.isSafari) {
-                if (fallbackLevel === 1) {
-                    // Safari prefers HLS
-                    if (url.includes('.mp3') && !url.includes('.m3u8')) {
-                        url = url.replace('.mp3', '.m3u8');
-                    }
-                } else if (fallbackLevel === 2) {
-                    // Try AAC format
-                    if (url.includes('.mp3')) {
-                        url = url.replace('.mp3', '.aac');
-                    }
-                } else if (fallbackLevel === 3) {
-                    // Try removing parameters
-                    url = url.split('?')[0];
-                }
-            }
-            
-            // Mobile specific optimizations
-            if (browserInfo.isMobile) {
-                if (fallbackLevel >= 2) {
-                    // Remove unnecessary parameters for mobile
-                    url = url.split('?')[0];
-                    // Remove trailing semicolons
-                    url = url.replace(/;$/, '');
-                }
-            }
-            
-            console.log(`Fallback ${fallbackLevel}: ${url}`);
-            return url;
-        }
-
-        // Show audio fallback
-        function showAudioFallback() {
-            audioFallback.classList.add('show');
-        }
-
-        // Hide audio fallback
-        function hideAudioFallback() {
-            audioFallback.classList.remove('show');
-        }
-
-        // Show stream error
-        function showStreamError(message) {
-            streamErrorText.textContent = message;
-            streamError.classList.add('show');
-            
-            setTimeout(() => {
-                streamError.classList.remove('show');
-            }, 5000);
-        }
-
-        // Hide stream error
-        function hideStreamError() {
-            streamError.classList.remove('show');
-        }
-
-        // Change station
         function changeStation(stationId) {
             const station = stations.find(s => s.id === stationId);
             if (!station) return;
-            
-            // Stop current audio
-            if (currentAudioPlayer) {
-                currentAudioPlayer.pause();
-            }
-            
-            // Reset fallback flags
-            useFallback = false;
-            useFallback2 = false;
-            useFallback3 = false;
-            
-            // Cleanup audio context to prevent connection errors
-            cleanupAudioContext();
-            
+            audioPlayer.pause();
             currentStation = station;
             currentLogo.src = station.logo;
             currentName.textContent = station.name;
             currentCountry.textContent = station.country;
             stationSelect.value = stationId;
-            
-            // Update recent stations
             updateRecentStations(station);
-            
-            // Show notification
             showNotification(`📻 ${station.name}`);
-            
-            // Try main player first
-            currentAudioPlayer = audioPlayer;
             audioPlayer.src = station.url;
             audioPlayer.play().catch(e => {
-                console.error('Error con reproductor principal:', e);
-                handleAudioError();
+                console.error("Error al reproducir:", e);
+                showStreamError('❌ Error al cargar la emisora. URL inválida o sin conexión.');
             });
-            
-            // Update favorite button
             updateFavoriteButton();
         }
 
-        // Toggle play/pause
         function togglePlayPause() {
-            if (!currentStation) return;
-            
+            if (!currentStation) {
+                showStreamError('⚠️ Selecciona una emisora primero');
+                return;
+            }
             if (isPlaying) {
-                currentAudioPlayer?.pause();
+                audioPlayer.pause();
             } else {
-                currentAudioPlayer?.play().catch(e => {
-                    console.error('Error al reproducir:', e);
-                    handleAudioError();
+                audioPlayer.play().catch(e => {
+                    console.error("Error al reproducir:", e);
+                    showStreamError('❌ Error al reproducir. Intenta otra emisora.');
                 });
             }
         }
 
-        // Update play button
         function updatePlayButton() {
-            if (isPlaying) {
-                playIcon.className = 'fas fa-pause';
-                currentLogo.classList.add('playing');
-            } else {
-                playIcon.className = 'fas fa-play';
-                currentLogo.classList.remove('playing');
-            }
+            playIcon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+            currentLogo.classList.toggle('playing', isPlaying);
         }
 
-        // Previous station
         function previousStation() {
             if (!currentStation) return;
-            
             const currentIndex = stations.findIndex(s => s.id === currentStation.id);
             const previousIndex = currentIndex > 0 ? currentIndex - 1 : stations.length - 1;
             changeStation(stations[previousIndex].id);
         }
 
-        // Next station
         function nextStation() {
             if (!currentStation) return;
-            
             const currentIndex = stations.findIndex(s => s.id === currentStation.id);
             const nextIndex = currentIndex < stations.length - 1 ? currentIndex + 1 : 0;
             changeStation(stations[nextIndex].id);
         }
 
-        // Change volume
         function changeVolume(value) {
             volume = parseFloat(value);
-            if (audioPlayer) audioPlayer.volume = volume;
-            if (audioPlayerFallback) audioPlayerFallback.volume = volume;
-            if (audioPlayerFallback2) audioPlayerFallback2.volume = volume;
-            if (audioPlayerFallback3) audioPlayerFallback3.volume = volume;
+            audioPlayer.volume = volume;
             volumeValue.textContent = Math.round(volume * 100) + '%';
             localStorage.setItem('volume', volume.toString());
         }
 
-        // Toggle theme
         function toggleTheme() {
             darkMode = !darkMode;
             updateTheme();
             localStorage.setItem('darkMode', darkMode.toString());
         }
 
-        // Update theme
         function updateTheme() {
-            const body = document.body;
-            const themeIcon = document.getElementById('theme-icon');
-            
-            if (darkMode) {
-                body.classList.remove('light-mode');
-                themeIcon.className = 'fas fa-moon';
-            } else {
-                body.classList.add('light-mode');
-                themeIcon.className = 'fas fa-sun';
-            }
+            document.body.classList.toggle('light-mode', !darkMode);
+            document.getElementById('theme-icon').className = darkMode ? 'fas fa-moon' : 'fas fa-sun';
         }
 
-        // Toggle favorite
         function toggleFavorite() {
             if (!currentStation) return;
-            
             const stationId = currentStation.id;
-            
             if (favorites.includes(stationId)) {
                 favorites = favorites.filter(id => id !== stationId);
                 showNotification('❌ Eliminado de favoritos');
@@ -1680,35 +817,25 @@
                 favorites.push(stationId);
                 showNotification('⭐ Agregado a favoritos');
             }
-            
             localStorage.setItem('favorites', JSON.stringify(favorites));
             updateFavoritesList();
             updateFavoriteButton();
             updateFavoriteCount();
         }
 
-        // Update favorite button
         function updateFavoriteButton() {
             if (!currentStation) return;
-            
-            if (favorites.includes(currentStation.id)) {
-                favoriteBtn.classList.add('active');
-                favoriteIcon.className = 'fas fa-heart';
-            } else {
-                favoriteBtn.classList.remove('active');
-                favoriteIcon.className = 'far fa-heart';
-            }
+            const isFavorite = favorites.includes(currentStation.id);
+            favoriteBtn.classList.toggle('active', isFavorite);
+            favoriteIcon.className = isFavorite ? 'fas fa-heart' : 'far fa-heart';
         }
 
-        // Update favorite count
         function updateFavoriteCount() {
             favoriteCountEl.textContent = favorites.length;
         }
 
-        // Update favorites list
         function updateFavoritesList() {
             const favoriteStations = stations.filter(s => favorites.includes(s.id));
-            
             if (favoriteStations.length === 0) {
                 favoritesList.innerHTML = `
                     <div style="text-align: center; opacity: 0.7; padding: 2rem;">
@@ -1718,7 +845,6 @@
                 `;
                 return;
             }
-            
             favoritesList.innerHTML = favoriteStations.map(station => `
                 <div class="station-item" onclick="changeStation('${station.id}')">
                     <img src="${station.logo}" alt="${station.name}">
@@ -1730,14 +856,12 @@
             `).join('');
         }
 
-        // Update recent stations
         function updateRecentStations(station) {
             recentStations = [station, ...recentStations.filter(s => s.id !== station.id)].slice(0, 5);
             localStorage.setItem('recentStations', JSON.stringify(recentStations));
             updateRecentList();
         }
 
-        // Update recent list
         function updateRecentList() {
             if (recentStations.length === 0) {
                 recentList.innerHTML = `
@@ -1748,7 +872,6 @@
                 `;
                 return;
             }
-            
             recentList.innerHTML = recentStations.map(station => `
                 <div class="station-item" onclick="changeStation('${station.id}')">
                     <img src="${station.logo}" alt="${station.name}">
@@ -1760,131 +883,87 @@
             `).join('');
         }
 
-        // Share on WhatsApp
         function shareOnWhatsApp() {
             if (!currentStation) return;
-            
             const text = `🎵 Escuchando ${currentStation.name} en Radio Streaming Pro. ¡Únete! 📻`;
             const url = window.location.href;
             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`;
             window.open(whatsappUrl, '_blank');
         }
 
-        // Request notification permission
         function requestNotificationPermission() {
             if ('Notification' in window) {
                 if (Notification.permission === 'default') {
                     Notification.requestPermission().then(permission => {
-                        if (permission === 'granted') {
-                            showNotification('🔔 Notificaciones activadas');
-                        } else {
-                            showNotification('🔕 Notificaciones denegadas');
-                        }
+                        showNotification(permission === 'granted' ? '🔔 Notificaciones activadas' : '🔕 Notificaciones denegadas');
                     });
-                } else if (Notification.permission === 'granted') {
-                    showNotification('🔔 Notificaciones ya están activadas');
                 } else {
-                    showNotification('🔕 Notificaciones bloqueadas');
+                    showNotification(Notification.permission === 'granted' ? '🔔 Notificaciones ya están activadas' : '🔕 Notificaciones bloqueadas');
                 }
             } else {
                 showNotification('❌ Notificaciones no disponibles');
             }
         }
 
-        // Show notification
         function showNotification(message) {
             notificationText.textContent = message;
             notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
+            setTimeout(() => notification.classList.remove('show'), 3000);
         }
 
-        // Update clock
+        // ✅ Mensaje de error dura 8 segundos
+        function showStreamError(message) {
+            streamErrorText.textContent = message;
+            streamError.classList.add('show');
+            setTimeout(() => {
+                streamError.classList.remove('show');
+            }, 8000); // 8 segundos
+        }
+
+        function hideStreamError() {
+            streamError.classList.remove('show');
+        }
+
         function updateClock() {
             const now = new Date();
-            // Convert to Costa Rica time (UTC-6)
             const costaRicaTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Costa_Rica"}));
-            
             const hours = costaRicaTime.getHours();
             const minutes = costaRicaTime.getMinutes();
             const seconds = costaRicaTime.getSeconds();
             const ampm = hours >= 12 ? 'PM' : 'AM';
             const displayHours = hours % 12 || 12;
-            
             clockTime.textContent = `${displayHours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
-            
-            // Update greeting
-            if (hours < 12) {
-                greeting.textContent = 'Buenos días';
-            } else if (hours < 18) {
-                greeting.textContent = 'Buenas tardes';
-            } else {
-                greeting.textContent = 'Buenas noches';
-            }
+            greeting.textContent = hours < 12 ? 'Buenos días' : hours < 18 ? 'Buenas tardes' : 'Buenas noches';
         }
 
-        // Update listener count
         function updateListenerCount() {
-            const baseCount = Math.floor(Math.random() * 100) + 50;
-            listenerCount = baseCount * 10;
+            listenerCount = (Math.floor(Math.random() * 100) + 50) * 10;
             listenerCountEl.textContent = listenerCount.toLocaleString();
         }
 
-        // Setup keyboard controls
         function setupKeyboardControls() {
-            let lastKeyPress = 0;
-            let lastKey = '';
-            
             document.addEventListener('keydown', (e) => {
-                const now = Date.now();
-                
-                // Handle double press for scroll
-                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                    if (now - lastKeyPress < 300 && lastKey === e.key) {
-                        // Double press - scroll
-                        const scrollAmount = e.key === 'ArrowUp' ? -80 : 80;
-                        window.scrollBy({ top: scrollAmount, behavior: 'smooth' });
-                        e.preventDefault();
-                    }
-                    lastKeyPress = now;
-                    lastKey = e.key;
-                }
-                
-                // Handle station change with arrows
+                e.preventDefault();
+
                 if (e.key === 'ArrowLeft') {
-                    e.preventDefault();
                     previousStation();
                 } else if (e.key === 'ArrowRight') {
-                    e.preventDefault();
                     nextStation();
-                }
-                
-                // Handle spacebar for play/pause
-                if (e.key === ' ') {
-                    e.preventDefault();
+                } else if (e.key === 'ArrowUp') {
+                    window.scrollBy({ top: -80, behavior: 'smooth' });
+                } else if (e.key === 'ArrowDown') {
+                    window.scrollBy({ top: 80, behavior: 'smooth' });
+                } else if (e.key === 'Enter' || e.key === ' ') {
                     togglePlayPause();
-                }
-                
-                // Handle 'f' for favorite
-                if (e.key === 'f' || e.key === 'F') {
+                } else if (e.key === 'f' || e.key === 'F') {
                     toggleFavorite();
-                }
-                
-                // Handle 'm' for theme toggle
-                if (e.key === 'm' || e.key === 'M') {
+                } else if (e.key === 'm' || e.key === 'M') {
                     toggleTheme();
-                }
-                
-                // Handle volume control
-                if (e.key === 'ArrowUp' && e.ctrlKey) {
-                    e.preventDefault();
+                } else if (e.key === 'ArrowUp' && e.ctrlKey) {
                     const newVolume = Math.min(1, volume + 0.1);
                     volumeSlider.value = newVolume;
                     changeVolume(newVolume);
                 } else if (e.key === 'ArrowDown' && e.ctrlKey) {
-                    e.preventDefault();
                     const newVolume = Math.max(0, volume - 0.1);
                     volumeSlider.value = newVolume;
                     changeVolume(newVolume);
@@ -1892,7 +971,6 @@
             });
         }
 
-        // Initialize app when DOM is loaded
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
