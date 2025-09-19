@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radio Streaming Pro - Versión Perfecta</title>
-    <link rel="shortcut icon" type="image/ico" href="img/favicon.ico">
+    <title>Radio Streaming Pro - Versión Definitiva</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -776,7 +775,7 @@
                     <!-- Current Station -->
                     <div class="current-station">
                         <div class="station-logo-container">
-                            <img id="currentLogo" src="https://via.placeholder.com/150/6366f1/ffffff?text=Radio" alt="Logo" class="station-logo">
+                            <img id="currentLogo" src="https://picsum.photos/seed/radio1/150/150.jpg" alt="Logo" class="station-logo">
                         </div>
                         <div class="station-name" id="currentName">Selecciona una emisora</div>
                         <div class="station-country" id="currentCountry">Costa Rica</div>
@@ -914,7 +913,7 @@
             { id: '8', name: 'Azul 99.9 Lo mejor de tu vida', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/CRC_999AAC_SC', logo: 'https://static.mytuner.mobi/media/tvos_radios/154/azul-999-fm.c964f3b8.jpg', color: '#5603ad', country: 'Costa Rica' },
             { id: '9', name: 'Radio Omega', url: 'http://rtvhd.net:9932/', logo: 'https://static.mytuner.mobi/media/tvos_radios/CwACYSkeK6.png', color: '#172b4d', country: 'Costa Rica' },
             { id: '10', name: 'La Tropical Online', url: 'https://radio.grscr.com/listen/la_tropical/radio.mp3', logo: 'https://latropical.online/wp-content/uploads/2021/10/logo-plateado.png', color: '#32325d', country: 'Costa Rica' },
-            { id: '11', name: 'Orotina Online Radio', url: 'https://stream.zeno.fm/wq6egm5ywrquv', logo: 'https://via.placeholder.com/150/1e90ff/ffffff?text=OR', color: '#8898aa', country: 'Costa Rica' },
+            { id: '11', name: 'Orotina Online Radio', url: 'https://stream.zeno.fm/wq6egm5ywrquv', logo: 'https://picsum.photos/seed/orotina/150/150.jpg', color: '#8898aa', country: 'Costa Rica' },
             { id: '12', name: 'Radio Nosara', url: 'https://sonicpanel.zonaradio.net/8038/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/848/radio-nosara.2ab18d0e.jpg', color: '#525f7f', country: 'Costa Rica' },
             { id: '13', name: 'Columbia 98.7 FM / CR', url: 'https://s2.radio.co/s83b86382e/listen', logo: 'https://static.mytuner.mobi/media/tvos_radios/EYDaxpE6Q4.png', color: '#f4f5f7', country: 'Costa Rica' },
             { id: '14', name: 'Conexión Urbana / CR', url: 'http://stream.zeno.fm/q4g3r414ztzuv', logo: 'https://static.mytuner.mobi/media/tvos_radios/160/conexion-urbana.da9a3caa.png', color: '#5e72e4', country: 'Costa Rica' },
@@ -1006,7 +1005,7 @@
 
         // Initialize app
         function initApp() {
-            console.log('🎉 ¡Hola Óscar! Tu app de radio perfecta está lista.');
+            console.log('🎉 ¡Hola Óscar! Tu app de radio definitiva está lista.');
             
             // Detect browser capabilities
             detectBrowserCapabilities();
@@ -1258,28 +1257,53 @@
             }
         }
 
+        // Cleanup audio context to prevent connection errors
+        function cleanupAudioContext() {
+            if (source) {
+                try {
+                    source.disconnect();
+                    source = null;
+                } catch (e) {
+                    console.log('Error al desconectar source:', e);
+                }
+            }
+            
+            // Create new analyser for fresh connection
+            if (analyser && audioContext) {
+                analyser.disconnect();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+            }
+        }
+
         // Start visualizer
         function startVisualizer() {
             // Stop any existing visualizer
             stopVisualizer();
             
-            if (browserInfo.supportsWebAudio && analyser && currentAudioPlayer) {
-                // Connect audio context if not already connected
-                if (!source) {
-                    try {
-                        source = audioContext.createMediaElementSource(currentAudioPlayer);
-                        source.connect(analyser);
-                        analyser.connect(audioContext.destination);
-                    } catch (e) {
-                        console.error('Error connecting Web Audio:', e);
-                        startFallbackVisualizer();
-                        return;
-                    }
-                }
-                
-                animateVisualizer();
+            if (browserInfo.supportsWebAudio && analyser && currentAudioPlayer && audioContext) {
+                // Connect audio context safely
+                connectVisualizer();
             } else {
                 // Fallback visualizer
+                startFallbackVisualizer();
+            }
+        }
+
+        // Connect visualizer safely
+        function connectVisualizer() {
+            if (!currentAudioPlayer || !analyser || !audioContext) return;
+            
+            try {
+                cleanupAudioContext();
+                source = audioContext.createMediaElementSource(currentAudioPlayer);
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+                console.log('Visualizer conectado exitosamente');
+                animateVisualizer();
+            } catch (error) {
+                console.error('Error al conectar visualizer:', error);
                 startFallbackVisualizer();
             }
         }
@@ -1541,11 +1565,8 @@
             useFallback2 = false;
             useFallback3 = false;
             
-            // Reset audio context
-            if (source) {
-                source.disconnect();
-                source = null;
-            }
+            // Cleanup audio context to prevent connection errors
+            cleanupAudioContext();
             
             currentStation = station;
             currentLogo.src = station.logo;
@@ -1876,4 +1897,3 @@
     </script>
 </body>
 </html>
-
