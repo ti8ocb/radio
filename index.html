@@ -559,6 +559,13 @@
             padding: 0.75rem 1.5rem;
             font-size: 0.9rem;
         }
+        .danger-btn {
+            background: linear-gradient(135deg, var(--danger-color), var(--warning-color));
+        }
+        .danger-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        }
         .file-upload-btn {
             position: relative;
             overflow: hidden;
@@ -722,13 +729,10 @@
                 <button class="action-btn whatsapp-btn" onclick="downloadStations()">
                     <i class="fas fa-download"></i> Descargar Lista (.txt)
                 </button>
-                <!-- ✅ BOTÓN DE CARGA AÑADIDO -->
-                <div class="file-upload-btn">
-                    <button class="action-btn notification-btn">
-                        <i class="fas fa-upload"></i> Cargar Lista (.txt)
-                    </button>
-                    <input type="file" accept=".txt,.json" onchange="loadStationsFromFile(this)">
-                </div>
+                <!-- ✅ BOTÓN DE LIMPIAR LOCALSTORAGE AÑADIDO -->
+                <button class="action-btn danger-btn" onclick="clearLocalStorage()" title="¡Cuidado! Esto borrará todos tus datos">
+                    <i class="fas fa-trash"></i> Limpiar LocalStorage
+                </button>
                 <button class="action-btn" onclick="closeStationManager()">
                     <i class="fas fa-times"></i> Cancelar
                 </button>
@@ -739,259 +743,39 @@
         // Función para obtener lista por defecto
         function getDefaultStations() {
             return [
-  {
-    "id": "1",
-    "name": "Unción 106.7 FM",
-    "url": "https://centova.hostingtico.com:7016/;stream.mp3",
-    "logo": "https://cdn-radiotime-logos.tunein.com/s25054d.png",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "2",
-    "name": "Oldies Hits Español",
-    "url": "https://centova01.logicahost.com.br:20038/autodj",
-    "logo": "https://cdn-profiles.tunein.com/s232911/images/logod.png",
-    "country": "España"
-  },
-  {
-    "id": "3",
-    "name": "Oldies Hits 70´s y 80´s",
-    "url": "https://centova01.logicahost.com.br:20037/autodj",
-    "logo": "https://cdn-profiles.tunein.com/s123079/images/logod.png",
-    "country": "España"
-  },
-  {
-    "id": "4",
-    "name": "Amor FM 93.9",
-    "url": "https://player.hostingtico.com/proxy/8094",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/440/amor-fm-939.07d03e3b.jpg",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "5",
-    "name": "La Caliente 90.7FM",
-    "url": "https://18863.live.streamtheworld.com/LA_CALIENTE_CR.mp3",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/166/la-caliente-907-fm.7524ad1c.png",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "6",
-    "name": "IQ, La Radio Inteligente 93.9 fm",
-    "url": "https://centova.hostingtico.com:7002/stream/",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/y2z6ngbnd4ml.png",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "7",
-    "name": "Onda Brava Radio",
-    "url": "http://cast4.my-control-panel.com/proxy/ondabra3/stream",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/842/onda-brava.6e844700.png",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "8",
-    "name": "Azul 99.9 Lo mejor de tu vida",
-    "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/CRC_999AAC_SC",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/154/azul-999-fm.c964f3b8.jpg",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "9",
-    "name": "Radio Omega",
-    "url": "http://rtvhd.net:9932/",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/CwACYSkeK6.png",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "10",
-    "name": "La Tropical Online",
-    "url": "https://radio.grscr.com/listen/la_tropical/radio.mp3",
-    "logo": "https://latropical.online/wp-content/uploads/2021/10/logo-plateado.png",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "11",
-    "name": "Orotina Online Radio",
-    "url": "https://stream.zeno.fm/wq6egm5ywrquv",
-    "logo": "https://picsum.photos/seed/orotina/150/150.jpg",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "12",
-    "name": "Radio Nosara",
-    "url": "https://sonicpanel.zonaradio.net/8038/stream",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/848/radio-nosara.2ab18d0e.jpg",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "13",
-    "name": "Columbia 98.7 FM / CR",
-    "url": "https://s2.radio.co/s83b86382e/listen",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/EYDaxpE6Q4.png",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "14",
-    "name": "Conexión Urbana / CR",
-    "url": "http://stream.zeno.fm/q4g3r414ztzuv",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/160/conexion-urbana.da9a3caa.png",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "15",
-    "name": "Guanacaste FM 80s 90s y más",
-    "url": "https://stream10.usastreams.com/8008/guanacastefm",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/100/guanacaste-fm.c638f92a.jpg",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "16",
-    "name": "15 Radio Musical 97.5FM",
-    "url": "https://live.turadio.stream:7005/stream",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/DwhGDNNVvb.jpg",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "17",
-    "name": "Radio Sinfonola 90.3 FM",
-    "url": "https://live.turadio.stream:9972/;",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/415/radio-sinfonola.79d5c3e6.png",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "18",
-    "name": "Radio 2, 99.5 fm",
-    "url": "https://s5.radio.co/sd515b7b34/listen",
-    "logo": "https://cdn-radiotime-logos.tunein.com/s13187d.png",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "19",
-    "name": "Radio Sinaí / Pz.",
-    "url": "https://centova12.instainternet.com/proxy/sinaicr/stream",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/174/radio-sinai.5f89bfcb.png",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "20",
-    "name": "Bésame 89.9 FM",
-    "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/BESAME_CR.mp3",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/N4GCpM7GT7.png",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "21",
-    "name": "M.R.O.C, Aerop Int SJO",
-    "url": "http://d.liveatc.net/mroc",
-    "logo": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/77/30/90/773090a1-2d1f-e8cc-1d7f-f697cb476782/AppIcon-0-0-1x_U007emarketing-0-7-0-85-220.png/230x0w.webp",
-    "country": "Costa Rica"
-  },
-  {
-    "id": "22",
-    "name": "Radio Corporación / Ni",
-    "url": "https://stream.zeno.fm/gwkd66k0a7duv",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/JVf3FrARwB.jpg",
-    "country": "Nicaragua"
-  },
-  {
-    "id": "23",
-    "name": "Radio La Sandino / Ni",
-    "url": "http://streaming.lasandino.com.ni:8020/lasandino.mp3",
-    "logo": "https://cdn-profiles.tunein.com/s13259/images/logod.png",
-    "country": "Nicaragua"
-  },
-  {
-    "id": "24",
-    "name": "La Nueva Radio Ya!",
-    "url": "https://stream.zenolive.com/6nwu9a6uwz4tv.aac",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/amgybJM7u7.png",
-    "country": "Nicaragua"
-  },
-  {
-    "id": "25",
-    "name": "Radio La Tuani en vivo",
-    "url": "http://server.multimediamb.com/9300/stream",
-    "logo": "https://static.mytuner.mobi/media/tvos_radios/KArdnuqZLu.png",
-    "country": "Nicaragua"
-  },
-  {
-    "id": "26",
-    "name": "Siuna La Poderosa",
-    "url": "https://polaris.hostingnica.net/8012/stream/1/",
-    "logo": "https://cdn-profiles.tunein.com/s239858/images/logod.png",
-    "country": "Nicaragua"
-  },
-  {
-    "id": "27",
-    "name": "Radio Bonanza",
-    "url": "https://stream.zeno.fm/hj27louo82ptv",
-    "logo": "https://cdn.instant.audio/images/logos/radios-co-ni/bonanza.png",
-    "country": "Nicaragua"
-  },
-  {
-    "id": "28",
-    "name": "Omega Stereo Panamá",
-    "url": "https://www.streaming507.net:8048/stream",
-    "logo": "https://radios-panama.com/uploads/img/omega-stereo.jpg",
-    "country": "Panamá"
-  },
-  {
-    "id": "29",
-    "name": "Actualidad 90.3 FM",
-    "url": "https://acp4.lorini.net/proxy/ur2080?mp=/stream",
-    "logo": "https://liveonlineradio.net/wp-content/uploads/2015/03/Actualidad-90.3-FM.jpg",
-    "country": "Venezuela"
-  },
-  {
-    "id": "30",
-    "name": "Caracol Radio 100.9 FM",
-    "url": "https://27373.live.streamtheworld.com/CARACOL_RADIOAAC.aac?dist=onlineradiobox",
-    "logo": "https://cdn.onlineradiobox.com/img/l/0/21440.v18.png",
-    "country": "Venezuela"
-  },
-  {
-    "id": "31",
-    "name": "Radio La Voz de Carabobo 1040 AM",
-    "url": "https://guri.tepuyserver.net/8086/stream",
-    "logo": "https://cdn.onlineradiobox.com/img/l/7/120377.v1.png",
-    "country": "Venezuela"
-  },
-  {
-    "id": "32",
-    "name": "34 Tamá Stereo 103.9 FM / San Cristóbal",
-    "url": "https://guri.tepuyserver.net/8457/stream;",
-    "logo": "https://cdn.onlineradiobox.com/img/l/2/60312.v9.png",
-    "country": "Venezuela"
-  },
-  {
-    "id": "1758347083357",
-    "name": "106.3FM - Pura Vida FM",
-    "url": "http://live.turadio.stream:9986/;",
-    "logo": "https://cdn-radiotime-logos.tunein.com/s161703d.png",
-    "country": "CR."
-  },
-  {
-    "id": "1758347282448",
-    "name": "Radio Disney Costa Rica",
-    "url": "https://ic.streann.com/disneycostarica",
-    "logo": "https://cdn-profiles.tunein.com/s309674/images/logod.png",
-    "country": "cr."
-  },
-  {
-    "id": "1758347506821",
-    "name": "Radio BestMusic 90.1 FM",
-    "url": "https://app.sonicpanelradio.com/8148/stream",
-    "logo": "https://cdn-profiles.tunein.com/s196714/images/logod.png",
-    "country": "CR."
-  },
-  {
-    "id": "1758347606102",
-    "name": "Nova Hits Radio",
-    "url": "https://centova.hostingtico.com:7006/stream",
-    "logo": "https://cdn-profiles.tunein.com/s153977/images/logod.jpg",
-    "country": "cr."
-  }
-];
+                { id: '1', name: 'Unción 106.7 FM', url: "https://centova.hostingtico.com:7016/;stream.mp3", logo: 'https://cdn-radiotime-logos.tunein.com/s25054d.png', country: 'Costa Rica' },
+                { id: '2', name: 'Oldies Hits Español', url: "https://centova01.logicahost.com.br:20038/autodj", logo: 'https://cdn-profiles.tunein.com/s232911/images/logod.png', country: 'España' },
+                { id: '3', name: 'Oldies Hits 70´s y 80´s', url: 'https://centova01.logicahost.com.br:20037/autodj', logo: 'https://cdn-profiles.tunein.com/s123079/images/logod.png', country: 'España' },
+                { id: '4', name: 'Amor FM 93.9', url: 'https://player.hostingtico.com/proxy/8094', logo: 'https://static.mytuner.mobi/media/tvos_radios/440/amor-fm-939.07d03e3b.jpg', country: 'Costa Rica' },
+                { id: '5', name: 'La Caliente 90.7FM', url: 'https://18863.live.streamtheworld.com/LA_CALIENTE_CR.mp3', logo: 'https://static.mytuner.mobi/media/tvos_radios/166/la-caliente-907-fm.7524ad1c.png', country: 'Costa Rica' },
+                { id: '6', name: 'IQ, La Radio Inteligente 93.9 fm', url: 'https://centova.hostingtico.com:7002/stream/', logo: 'https://static.mytuner.mobi/media/tvos_radios/y2z6ngbnd4ml.png', country: 'Costa Rica' },
+                { id: '7', name: 'Onda Brava Radio', url: 'http://cast4.my-control-panel.com/proxy/ondabra3/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/842/onda-brava.6e844700.png', country: 'Costa Rica' },
+                { id: '8', name: 'Azul 99.9 Lo mejor de tu vida', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/CRC_999AAC_SC', logo: 'https://static.mytuner.mobi/media/tvos_radios/154/azul-999-fm.c964f3b8.jpg', country: 'Costa Rica' },
+                { id: '9', name: 'Radio Omega', url: 'http://rtvhd.net:9932/', logo: 'https://static.mytuner.mobi/media/tvos_radios/CwACYSkeK6.png', country: 'Costa Rica' },
+                { id: '10', name: 'La Tropical Online', url: 'https://radio.grscr.com/listen/la_tropical/radio.mp3', logo: 'https://latropical.online/wp-content/uploads/2021/10/logo-plateado.png', country: 'Costa Rica' },
+                { id: '11', name: 'Orotina Online Radio', url: 'https://stream.zeno.fm/wq6egm5ywrquv', logo: 'https://picsum.photos/seed/orotina/150/150.jpg', country: 'Costa Rica' },
+                { id: '12', name: 'Radio Nosara', url: 'https://sonicpanel.zonaradio.net/8038/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/848/radio-nosara.2ab18d0e.jpg', country: 'Costa Rica' },
+                { id: '13', name: 'Columbia 98.7 FM / CR', url: 'https://s2.radio.co/s83b86382e/listen', logo: 'https://static.mytuner.mobi/media/tvos_radios/EYDaxpE6Q4.png', country: 'Costa Rica' },
+                { id: '14', name: 'Conexión Urbana / CR', url: 'http://stream.zeno.fm/q4g3r414ztzuv', logo: 'https://static.mytuner.mobi/media/tvos_radios/160/conexion-urbana.da9a3caa.png', country: 'Costa Rica' },
+                { id: '15', name: 'Guanacaste FM 80s 90s y más', url: 'https://stream10.usastreams.com/8008/guanacastefm', logo: 'https://static.mytuner.mobi/media/tvos_radios/100/guanacaste-fm.c638f92a.jpg', country: 'Costa Rica' },
+                { id: '16', name: '15 Radio Musical 97.5FM', url: 'https://live.turadio.stream:7005/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/DwhGDNNVvb.jpg', country: 'Costa Rica' },
+                { id: '17', name: 'Radio Sinfonola 90.3 FM', url: 'https://live.turadio.stream:7006/', logo: 'https://static.mytuner.mobi/media/tvos_radios/415/radio-sinfonola.79d5c3e6.png', country: 'Costa Rica' },
+                { id: '18', name: 'Radio 2, 99.5 fm', url: 'https://s5.radio.co/sd515b7b34/listen', logo: 'https://cdn-radiotime-logos.tunein.com/s13187d.png', country: 'Costa Rica' },
+                { id: '19', name: 'Radio Sinaí / Pz.', url: 'https://centova12.instainternet.com/proxy/sinaicr/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/174/radio-sinai.5f89bfcb.png', country: 'Costa Rica' },
+                { id: '20', name: 'Bésame 89.9 FM', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/BESAME_CR.mp3', logo: 'https://static.mytuner.mobi/media/tvos_radios/N4GCpM7GT7.png', country: 'Costa Rica' },
+                { id: '21', name: 'M.R.O.C, Aerop Int SJO', url: 'http://d.liveatc.net/mroc', logo: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/77/30/90/773090a1-2d1f-e8cc-1d7f-f697cb476782/AppIcon-0-0-1x_U007emarketing-0-7-0-85-220.png/230x0w.webp', country: 'Costa Rica' },
+                { id: '22', name: 'Radio Corporación / Ni', url: 'https://stream.zeno.fm/gwkd66k0a7duv', logo: 'https://static.mytuner.mobi/media/tvos_radios/JVf3FrARwB.jpg', country: 'Nicaragua' },
+                { id: '23', name: 'Radio La Sandino / Ni', url: 'http://streaming.lasandino.com.ni:8020/lasandino.mp3', logo: 'https://cdn-profiles.tunein.com/s13259/images/logod.png', country: 'Nicaragua' },
+                { id: '24', name: 'La Nueva Radio Ya!', url: 'https://stream.zenolive.com/6nwu9a6uwz4tv.aac', logo: 'https://static.mytuner.mobi/media/tvos_radios/amgybJM7u7.png', country: 'Nicaragua' },
+                { id: '25', name: 'Radio La Tuani en vivo', url: 'http://server.multimediamb.com/9300/stream', logo: 'https://static.mytuner.mobi/media/tvos_radios/KArdnuqZLu.png', country: 'Nicaragua' },
+                { id: '26', name: 'Siuna La Poderosa', url: 'https://polaris.hostingnica.net/8012/stream/1/', logo: 'https://cdn-profiles.tunein.com/s239858/images/logod.png', country: 'Nicaragua' },
+                { id: '27', name: 'Radio Bonanza', url: 'https://stream.zeno.fm/hj27louo82ptv', logo: 'https://cdn.instant.audio/images/logos/radios-co-ni/bonanza.png', country: 'Nicaragua' },
+                { id: '28', name: 'Omega Stereo Panamá', url: 'https://www.streaming507.net:8048/stream', logo: 'https://radios-panama.com/uploads/img/omega-stereo.jpg', country: 'Panamá' },
+                { id: '29', name: 'Actualidad 90.3 FM', url: 'https://acp4.lorini.net/proxy/ur2080?mp=/stream', logo: 'https://liveonlineradio.net/wp-content/uploads/2015/03/Actualidad-90.3-FM.jpg', country: 'Venezuela' },
+                { id: '30', name: 'Caracol Radio 100.9 FM', url: 'https://27373.live.streamtheworld.com/CARACOL_RADIOAAC.aac?dist=onlineradiobox', logo: 'https://cdn.onlineradiobox.com/img/l/0/21440.v18.png', country: 'Venezuela' },
+                { id: '31', name: 'Radio La Voz de Carabobo 1040 AM', url: 'https://guri.tepuyserver.net/8086/stream', logo: 'https://cdn.onlineradiobox.com/img/l/7/120377.v1.png', country: 'Venezuela' },
+                { id: '32', name: '34 Tamá Stereo 103.9 FM / San Cristóbal', url: 'https://guri.tepuyserver.net/8457/stream;', logo: 'https://cdn.onlineradiobox.com/img/l/2/60312.v9.png', country: 'Venezuela' }
+            ];
         }
         // Radio stations data
         let stations = getDefaultStations();
@@ -1006,6 +790,10 @@
         let browserInfo = {
             isEdgeMobile: false
         };
+        // Variables para manejar cambios rápidos de emisora
+        let currentRequest = null;
+        let isChangingStation = false;
+        
         // DOM elements
         const audioPlayer = document.getElementById('audioPlayer');
         const stationSelect = document.getElementById('stationSelect');
@@ -1028,6 +816,7 @@
         const notificationText = document.getElementById('notificationText');
         const streamError = document.getElementById('streamError');
         const streamErrorText = document.getElementById('streamErrorText');
+        
         // Initialize app
         function initApp() {
             console.log('✅ ¡Hola Óscar! App de radio ESTABLE y FUNCIONAL.');
@@ -1076,6 +865,7 @@
                 }
             }
         }
+        
         // Detect browser capabilities
         function detectBrowserCapabilities() {
             const userAgent = navigator.userAgent;
@@ -1083,6 +873,7 @@
             const isEdge = userAgent.indexOf('Edg') > -1;
             browserInfo.isEdgeMobile = isEdge && isMobile;
         }
+        
         // Load preferences from localStorage
         function loadPreferences() {
             const savedDarkMode = localStorage.getItem('darkMode');
@@ -1129,6 +920,7 @@
                 audioPlayer.volume = volume;
             }
         }
+        
         // Populate station selector
         function populateStationSelector() {
             stationSelect.innerHTML = '<option value="">Selecciona una emisora...</option>';
@@ -1139,18 +931,22 @@
                 stationSelect.appendChild(option);
             });
         }
+        
         // Setup audio player
         function setupAudioPlayer() {
             audioPlayer.addEventListener('play', () => {
                 isPlaying = true;
                 updatePlayButton();
+                hideStreamError();
             });
             audioPlayer.addEventListener('pause', () => {
                 isPlaying = false;
                 updatePlayButton();
             });
             audioPlayer.addEventListener('error', () => {
-                showStreamError('❌ Error al reproducir. Intenta otra emisora.');
+                if (!isChangingStation) {
+                    showStreamError('❌ Error al reproducir. Intenta otra emisora.');
+                }
                 isPlaying = false;
                 updatePlayButton();
             });
@@ -1158,31 +954,52 @@
                 hideStreamError();
             });
         }
-        // Change station
+        
+        // Change station - ¡MEJORADA PARA CAMBIOS RÁPIDOS!
         function changeStation(stationId) {
             const station = stations.find(s => s.id === stationId);
             if (!station) return;
-            audioPlayer.pause();
-            currentStation = station;
-            currentLogo.src = station.logo;
-            currentName.textContent = station.name;
-            currentCountry.textContent = station.country;
-            stationSelect.value = stationId;
-            updateRecentStations(station);
-            showNotification(`📻 ${station.name}`);
-            audioPlayer.src = station.url;
-            if (browserInfo.isEdgeMobile) {
-                showNotification('▶ Presiona Play para reproducir (Edge Móvil)');
-                isPlaying = false;
-                updatePlayButton();
-            } else {
-                audioPlayer.play().catch(e => {
-                    console.error("Error al reproducir:", e);
-                    showStreamError('❌ Error al cargar la emisora. URL inválida o sin conexión.');
-                });
+            
+            // Cancelar cualquier cambio anterior
+            if (currentRequest) {
+                clearTimeout(currentRequest);
             }
-            updateFavoriteButton();
+            
+            // Indicar que estamos cambiando de estación
+            isChangingStation = true;
+            
+            // Establecer un retraso mínimo para evitar errores por cambios rápidos
+            currentRequest = setTimeout(() => {
+                audioPlayer.pause();
+                currentStation = station;
+                currentLogo.src = station.logo;
+                currentName.textContent = station.name;
+                currentCountry.textContent = station.country;
+                stationSelect.value = stationId;
+                updateRecentStations(station);
+                showNotification(`📻 ${station.name}`);
+                audioPlayer.src = station.url;
+                
+                if (browserInfo.isEdgeMobile) {
+                    showNotification('▶ Presiona Play para reproducir (Edge Móvil)');
+                    isPlaying = false;
+                    updatePlayButton();
+                } else {
+                    audioPlayer.play().catch(e => {
+                        console.error("Error al reproducir:", e);
+                        showStreamError('❌ Error al cargar la emisora. URL inválida o sin conexión.');
+                    });
+                }
+                updateFavoriteButton();
+                
+                // Permitir que se muestren errores después de este cambio
+                setTimeout(() => {
+                    isChangingStation = false;
+                }, 2000);
+                
+            }, 300); // Retraso de 300ms para cambios rápidos
         }
+        
         // Toggle play/pause
         function togglePlayPause() {
             if (!currentStation) {
@@ -1198,11 +1015,13 @@
                 });
             }
         }
+        
         // Update play button
         function updatePlayButton() {
             playIcon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
             currentLogo.classList.toggle('playing', isPlaying);
         }
+        
         // Previous station
         function previousStation() {
             if (!currentStation) return;
@@ -1210,6 +1029,7 @@
             const previousIndex = currentIndex > 0 ? currentIndex - 1 : stations.length - 1;
             changeStation(stations[previousIndex].id);
         }
+        
         // Next station
         function nextStation() {
             if (!currentStation) return;
@@ -1217,6 +1037,7 @@
             const nextIndex = currentIndex < stations.length - 1 ? currentIndex + 1 : 0;
             changeStation(stations[nextIndex].id);
         }
+        
         // Change volume
         function changeVolume(value) {
             volume = parseFloat(value);
@@ -1224,17 +1045,20 @@
             volumeValue.textContent = Math.round(volume * 100) + '%';
             localStorage.setItem('volume', volume.toString());
         }
+        
         // Toggle theme
         function toggleTheme() {
             darkMode = !darkMode;
             updateTheme();
             localStorage.setItem('darkMode', darkMode.toString());
         }
+        
         // Update theme
         function updateTheme() {
             document.body.classList.toggle('light-mode', !darkMode);
             document.getElementById('theme-icon').className = darkMode ? 'fas fa-moon' : 'fas fa-sun';
         }
+        
         // Toggle favorite
         function toggleFavorite() {
             if (!currentStation) return;
@@ -1251,6 +1075,7 @@
             updateFavoriteButton();
             updateFavoriteCount();
         }
+        
         // Update favorite button
         function updateFavoriteButton() {
             if (!currentStation) return;
@@ -1258,10 +1083,12 @@
             favoriteBtn.classList.toggle('active', isFavorite);
             favoriteIcon.className = isFavorite ? 'fas fa-heart' : 'far fa-heart';
         }
+        
         // Update favorite count
         function updateFavoriteCount() {
             favoriteCountEl.textContent = favorites.length;
         }
+        
         // Update favorites list
         function updateFavoritesList() {
             const favoriteStations = stations.filter(s => favorites.includes(s.id));
@@ -1284,12 +1111,14 @@
                 </div>
             `).join('');
         }
+        
         // Update recent stations
         function updateRecentStations(station) {
             recentStations = [station, ...recentStations.filter(s => s.id !== station.id)].slice(0, 5);
             localStorage.setItem('recentStations', JSON.stringify(recentStations));
             updateRecentList();
         }
+        
         // Update recent list
         function updateRecentList() {
             if (recentStations.length === 0) {
@@ -1311,6 +1140,7 @@
                 </div>
             `).join('');
         }
+        
         // Share on WhatsApp
         function shareOnWhatsApp() {
             if (!currentStation) return;
@@ -1319,6 +1149,7 @@
             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`;
             window.open(whatsappUrl, '_blank');
         }
+        
         // Request notification permission
         function requestNotificationPermission() {
             if ('Notification' in window) {
@@ -1333,12 +1164,14 @@
                 showNotification('❌ Notificaciones no disponibles');
             }
         }
+        
         // Show notification
         function showNotification(message) {
             notificationText.textContent = message;
             notification.classList.add('show');
             setTimeout(() => notification.classList.remove('show'), 3000);
         }
+        
         // Show stream error (dura 8 segundos)
         function showStreamError(message) {
             streamErrorText.textContent = message;
@@ -1347,10 +1180,12 @@
                 streamError.classList.remove('show');
             }, 8000);
         }
+        
         // Hide stream error
         function hideStreamError() {
             streamError.classList.remove('show');
         }
+        
         // Update clock
         function updateClock() {
             const now = new Date();
@@ -1363,11 +1198,13 @@
             clockTime.textContent = `${displayHours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
             greeting.textContent = hours < 12 ? 'Buenos días' : hours < 18 ? 'Buenas tardes' : 'Buenas noches';
         }
+        
         // Update listener count
         function updateListenerCount() {
             listenerCount = (Math.floor(Math.random() * 100) + 50) * 10;
             listenerCountEl.textContent = listenerCount.toLocaleString();
         }
+        
         // Setup keyboard controls — ¡CORREGIDO!
         function setupKeyboardControls() {
             document.addEventListener('keydown', (e) => {
@@ -1402,15 +1239,18 @@
                 }
             });
         }
+        
         // Station Manager Functions
         function openStationManager() {
             document.getElementById('stationManagerModal').style.display = 'block';
             renderStationsList();
             console.log('🔧 Editor de emisoras abierto');
         }
+        
         function closeStationManager() {
             document.getElementById('stationManagerModal').style.display = 'none';
         }
+        
         function renderStationsList() {
             const container = document.getElementById('stationsList');
             container.innerHTML = `
@@ -1439,6 +1279,7 @@
                 tableBody.appendChild(row);
             });
         }
+        
         function addNewStation() {
             const newStation = {
                 id: Date.now().toString(),
@@ -1451,6 +1292,7 @@
             renderStationsList();
             showNotification('✅ Nueva emisora añadida');
         }
+        
         function saveAllAndClose() {
             const inputs = document.querySelectorAll('.table-input');
             const newStations = [];
@@ -1483,6 +1325,7 @@
             }
             closeStationManager();
         }
+        
         // ✅ Función de descarga corregida (usando Blob)
         function downloadStations() {
             const data = JSON.stringify(stations, null, 2);
@@ -1499,34 +1342,19 @@
             }, 100);
             showNotification('✅ Lista descargada como radio-stations.txt');
         }
-        // ✅ Función para cargar lista desde archivo
-        function loadStationsFromFile(input) {
-            const file = input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                try {
-                    const loadedStations = JSON.parse(event.target.result);
-                    if (Array.isArray(loadedStations) && loadedStations.length > 0) {
-                        stations = loadedStations;
-                        // ✅ Guardar en localStorage
-                        localStorage.setItem('radioStations', JSON.stringify(stations));
-                        renderStationsList();
-                        populateStationSelector();
-                        showNotification('✅ Lista cargada y guardada exitosamente');
-                        // Resetear el input para que se pueda cargar el mismo archivo nuevamente
-                        input.value = '';
-                    } else {
-                        throw new Error('Formato inválido');
-                    }
-                } catch (error) {
-                    showNotification('❌ Error al cargar el archivo');
-                    console.error(error);
-                    input.value = '';
-                }
-            };
-            reader.readAsText(file);
+        
+        // ✅ NUEVA FUNCIÓN: Limpiar LocalStorage
+        function clearLocalStorage() {
+            if (confirm('⚠️ ¡ADVERTENCIA! Esto borrará TODOS tus datos: favoritos, emisoras personalizadas, tema, volumen, etc. ¿Estás seguro?')) {
+                localStorage.clear();
+                showNotification('🧹 LocalStorage limpiado. Recargando página...');
+                // Recargar la página para reiniciar todo con valores por defecto
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            }
         }
+        
         // Initialize app
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
