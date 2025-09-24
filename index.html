@@ -667,14 +667,41 @@
             color: white;
         }
 
-        /* ✅ Mejora visual del reproductor de video */
+        /* ✅ Reproductor HLS mejorado - SIN ventana negra */
+        #videoPlayerContainer {
+            position: relative;
+            margin: 20px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            background: #000;
+            display: none;
+        }
         #videoPlayer {
             width: 100%;
-            max-height: 320px;
-            border-radius: 16px;
+            height: auto;
+            display: block;
             background: #000;
-            object-fit: contain;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            aspect-ratio: 16/9;
+            /* Ocultar controles nativos */
+            outline: none;
+        }
+        #videoPlayer::-webkit-media-controls {
+            display: none !important;
+        }
+        /* Placeholder mientras carga */
+        .video-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 1.2rem;
         }
 
         /* ✅ Botón de edición más pequeño en todas las pantallas */
@@ -752,11 +779,12 @@
                         <div class="loading-indicator" id="loadingIndicator">
                             <i class="fas fa-spinner fa-spin"></i> Cargando emisora...
                         </div>
-                        <!-- ✅ NUEVO: Contenedor para el reproductor de video -->
-                        <div id="videoPlayerContainer" style="display: none; margin: 20px 0;">
-                            <video id="videoPlayer" controls>
-                                Tu navegador no soporta el elemento de video.
-                            </video>
+                        <!-- ✅ NUEVO: Contenedor mejorado para video -->
+                        <div id="videoPlayerContainer">
+                            <div class="video-placeholder" id="videoPlaceholder">
+                                <i class="fas fa-tv"></i> Cargando transmisión...
+                            </div>
+                            <video id="videoPlayer" controlslist="nodownload nofullscreen noremoteplayback" disablepictureinpicture playsinline></video>
                         </div>
                         <!-- Controls -->
                         <div class="controls">
@@ -1360,6 +1388,7 @@
         const songTitle = document.getElementById('songTitle');
         const songInfo = document.getElementById('songInfo');
         const loadingIndicator = document.getElementById('loadingIndicator');
+        const videoPlaceholder = document.getElementById('videoPlaceholder');
         
         // ✅ NUEVA FUNCIÓN: Actualizar contador de emisoras
         function updateTotalStationsCount() {
@@ -1513,6 +1542,7 @@
                 updatePlayButton();
                 hideStreamError();
                 hideLoadingIndicator();
+                videoPlaceholder.style.display = 'none';
             });
             videoPlayer.addEventListener('pause', () => {
                 isPlaying = false;
@@ -1525,14 +1555,17 @@
                 isPlaying = false;
                 updatePlayButton();
                 stopMetadataPolling();
+                videoPlaceholder.style.display = 'flex';
             });
             videoPlayer.addEventListener('canplay', () => {
                 hideStreamError();
                 hideLoadingIndicator();
+                videoPlaceholder.style.display = 'none';
             });
             videoPlayer.addEventListener('loadstart', () => {
                 showLoadingIndicator();
                 console.log('Cargando stream:', currentStation ? currentStation.url : 'N/A');
+                videoPlaceholder.style.display = 'flex';
             });
             videoPlayer.addEventListener('stalled', () => {
                 console.warn('Stream stalled');
@@ -1565,7 +1598,7 @@
                 return stationUrl;
             }
         }
-        // ✅ NUEVA FUNCIÓN: Configuración robusta de HLS con manejo de errores
+        // ✅ NUEVA FUNCIÓN: Configuración robusta de HLS con calidad adaptativa
         function setupHLSPlayer(streamUrl) {
             if (hls) {
                 hls.destroy();
@@ -1573,25 +1606,20 @@
             }
             // Resetear contador de reintentos
             hlsRetryCount = 0;
-            // Configuración optimizada para manejo de buffers
+            // ✅ Configuración para calidad adaptativa INTELIGENTE
             const hlsConfig = {
                 debug: false,
                 enableWorker: true,
                 lowLatencyMode: true,
-                backBufferLength: 30,
+                abrEwmaDefaultEstimate: 500000, // Estimación inicial (500 kbps)
+                abrEwmaSlowLive: 3,             // Sensibilidad en vivo
+                abrEwmaFastLive: 1,             // Reacción rápida a cambios
+                abrBandWidthFactor: 0.8,        // Usa 80% del ancho de banda detectado
+                abrBandWidthUpFactor: 0.7,      // Sube calidad solo si hay margen
                 maxBufferLength: 30,
                 maxMaxBufferLength: 60,
-                maxBufferSize: 60 * 1000 * 1000,
-                maxBufferHole: 1,
-                highBufferWatchdogPeriod: 2,
-                nudgeOffset: 0.1,
-                nudgeMaxRetry: 3,
-                liveSyncDurationCount: 3,
-                liveMaxLatencyDurationCount: 10,
                 fragLoadingTimeOut: 10000,
-                fragLoadingMaxRetry: 3,
-                manifestLoadingTimeOut: 10000,
-                manifestLoadingMaxRetry: 2
+                manifestLoadingTimeOut: 10000
             };
             hls = new Hls(hlsConfig);
             hls.loadSource(streamUrl);
@@ -1602,11 +1630,8 @@
                 // No intentar reproducir automáticamente en la primera carga
                 if (!isFirstLoad) {
                     setTimeout(() => {
-                        if (!isPlaying && !browserInfo.isEdgeMobile) {
-                            videoPlayer.play().catch(e => {
-                                console.warn('⚠️ Reproducción automática bloqueada:', e.message);
-                                showNotification('▶ Haz clic en Play para comenzar');
-                            });
+                        if (!isPlaying) {
+                            togglePlayPause(); // Usa TU función de control
                         }
                     }, 500);
                 }
